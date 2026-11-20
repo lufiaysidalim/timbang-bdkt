@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Timbang Isi: latihan BDKT</title>
+<style>
+:root{--bg:#e9edf4;--fg:#1a2236;--card:#ffffff;--muted:#59627a;--line:#ccd3e0;--good:#0b8f6a;--warn:#a86f00;--bad:#c42b52;--accent:#6d3a9c;--onacc:#ffffff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10162a;--fg:#eaeef8;--card:#1a2340;--muted:#9aa6c4;--line:#2d3a5e;--good:#34d6a6;--warn:#ffcf5a;--bad:#ff7391;--accent:#c78cf0;--onacc:#1a1030}}
+:root[data-theme="dark"]{--bg:#10162a;--fg:#eaeef8;--card:#1a2340;--muted:#9aa6c4;--line:#2d3a5e;--good:#34d6a6;--warn:#ffcf5a;--bad:#ff7391;--accent:#c78cf0;--onacc:#1a1030}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 "Trebuchet MS","Segoe UI",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:460px;margin:0 auto;padding:10px 12px 18px}
+h1{font-size:19px;margin:2px 0 8px;letter-spacing:.2px}
+.stats{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.stats b{color:var(--fg)}
+.lives{color:var(--bad);font-size:17px;letter-spacing:2px}
+.bar{height:14px;background:var(--card);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;width:100%;background:var(--good);transition:background .2s}
+.stage{position:relative}
+canvas{display:block;width:100%;height:auto;aspect-ratio:420/500;border-radius:12px;touch-action:none;background:#1f2a44}
+.info{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:8px 0;gap:8px}
+#hn{color:var(--warn);min-height:1.4em}
+.ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{font:inherit;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;padding:14px 8px;touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+#pour{grid-column:1/3;background:var(--accent);color:var(--onacc);border-color:var(--accent);font-size:20px;padding:20px 8px}
+#pour small{color:inherit;opacity:.8}
+#pour.on{filter:brightness(1.25)}
+#seal{grid-column:1/3;background:var(--good);color:var(--onacc);border-color:var(--good);font-size:20px;padding:20px 8px}
+#seal small{color:inherit;opacity:.85}
+#pause{background:#ffcc2a;border-color:#e0a800;color:#1a2236;padding:10px 14px;white-space:nowrap;flex:none}
+#pause:disabled{opacity:.45;cursor:default}
+.tog{margin-top:8px;width:100%;font-weight:400;font-size:13px;padding:8px}
+#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px}
+#ov[hidden]{display:none}
+#ov div{background:var(--card);border:3px solid var(--accent);border-radius:14px;padding:16px 14px;text-align:center;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#ov h2{margin:0 0 8px;font-size:26px}
+#ov p{margin:6px 0;font-size:14px}
+#ov button{margin-top:10px;background:var(--accent);color:var(--onacc);border-color:var(--accent);width:100%}
+.rule{margin-top:12px;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Timbang Isi: latihan BDKT</h1>
+<div class="stats"><span>Level <b id="lv">1</b></span><span>Skor <b id="sc">0</b></span><span>Terbaik <b id="bs">0</b></span><span class="lives" id="lf" aria-label="Nyawa"></span></div>
+<div class="bar"><i id="tb"></i></div>
+<div class="stage">
+<canvas id="cv" aria-label="Timbangan elektronik dengan kemasan kosong"></canvas>
+<div id="ov"><div><h2 id="ot"></h2><div id="ox"></div><button id="ob"></button></div></div>
+</div>
+<div class="info"><div><div id="tg"></div><div id="hn"></div></div><button id="pause" type="button">❚❚ Jeda</button></div>
+<div class="ctl">
+<button id="pour">Tuang<small>tahan tombol atau spasi, makin lama makin deras</small></button>
+<button id="take">Ambil 1 keping<small>Backspace</small></button>
+<button id="tare">Tare<small>tombol T</small></button>
+<button id="seal">Segel<small>selesai menimbang (Enter)</small></button>
+</div>
+<button class="tog" id="hint">Bantuan target: mati</button>
+<p class="rule">Isi kurang dari label = kalah. Berlebih lebih dari 10% label (minimal 1 g) = bahan terbuang, kalah. Waktu habis = kalah. Aturan ini sengaja lebih ketat daripada batas kesalahan yang diizinkan di Permendag 31/2011.</p>
+</div>
+<script>
+(()=>{
+"use strict";
+/* ===== Pengaturan (satuan berat: persepuluh gram) ===== */
+const T=10,NET_MIN=10,NET_MAX=100,POUCH_MIN=10,POUCH_MAX=100,CHIP_MIN=3,CHIP_MAX=10;
+const OVER_PCT=.10,OVER_MIN=10,LIVES=3,RP=200,MAXRATE=18,FALL=900;
+const W=420,H=500,CX=210,PLAT=340,PW=150,PH=180,PER=12,STEP=6;
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const cv=$("cv"),g=cv.getContext("2d");
+const dpr=Math.min(3,window.devicePixelRatio||1);
+cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0);
+
+/* ===== Logika murni ===== */
+const overLimit=qn=>Math.max(OVER_MIN,Math.round(qn*OVER_PCT));
+function judge(net,qn){const lim=overLimit(qn);
+  if(net<qn)return["kurang",0,lim];
+  const o=net-qn;return o>lim?["berlebih",o,lim]:["menang",o,lim];}
+const timeLimit=(qg,lv)=>Math.max(6,Math.max(6,4+qg/8)*Math.max(.6,1-.04*lv));
+const rate=h=>Math.min(MAXRATE,3+14*h);
+const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,".");
+
+/* ===== Status ===== */
+let best=0;try{best=+localStorage.getItem("timbangIsiBest")||0}catch(e){}
+const s={mode:"menu",lives:LIVES,score:0,level:0,give:0,hint:false,ptr:false,key:false,paused:false,
+  qn:0,qg:0,pouch:0,landed:[],falling:[],tare:0,tl:1,left:1,held:0,acc:0,seal:false,res:null,pts:0};
+const net=()=>s.landed.reduce((a,c)=>a+c.w,0);
+const shown=()=>(s.pouch+net()-s.tare)/T;
+const pouring=()=>s.ptr||s.key;
+const pouchBox=()=>[CX-PW/2,PLAT-2-PH,CX+PW/2,PLAT-2];
+const winBox=()=>{const b=pouchBox();return[b[0]+12,b[1]+72,b[2]-12,b[3]-10]};
+const pileTop=()=>winBox()[3]-6-Math.floor(s.landed.length/PER)*STEP;
+
+function newRound(){
+  s.qg=rnd(NET_MIN,NET_MAX);s.qn=s.qg*T;s.pouch=rnd(POUCH_MIN,POUCH_MAX);
+  s.landed=[];s.falling=[];s.tare=0;s.tl=timeLimit(s.qg,s.level);s.left=s.tl;
+  s.held=0;s.acc=0;s.seal=false;s.mode="play";s.paused=false;s.res=null;ov(false);}
+function spawn(){s.falling.push({x:CX+(Math.random()*28-14),y:118,w:rnd(CHIP_MIN,CHIP_MAX),
+  c:["#7b2d8e","#9b4dbb","#5e2a84","#b06bd0"][rnd(0,3)],jx:Math.random()*6-3,jy:Math.random()*4-2});}
+function pourStart(){if(s.mode==="play"&&!s.paused&&!s.seal){s.held=0;s.acc=0;spawn();}}
+function take(){if(s.mode==="play"&&!s.paused&&s.landed.length)s.landed.pop();}
+function tare(){if(s.mode==="play"&&!s.paused)s.tare=s.tare?0:s.pouch+net();}
+function seal(){if(s.mode==="play"&&!s.paused)s.seal=true;}
+function togglePause(){if(s.mode!=="play")return;s.paused=!s.paused;if(s.paused){s.ptr=false;s.key=false;$("pour").classList.remove("on");}}
+
+function finish(reason){
+  const n=net();let r,o=0,lim=overLimit(s.qn);
+  if(reason==="waktu")r="waktu";else[r,o,lim]=judge(n,s.qn);
+  s.res={r,n,o,lim};s.pts=0;
+  if(r==="menang"){s.pts=100+Math.round(100*(1-o/lim))+Math.round(s.left*10);s.score+=s.pts;s.level++;s.give+=o;}
+  else{s.lives--;if(r==="berlebih")s.give+=o;}
+  if(s.score>best){best=s.score;try{localStorage.setItem("timbangIsiBest",best)}catch(e){}}
+  s.mode="result";s.ptr=false;s.key=false;$("pour").classList.remove("on");showResult();}
+
+function update(dt){
+  s.left-=dt;
+  if(pouring()&&!s.seal){s.held+=dt;s.acc+=rate(s.held)*dt;while(s.acc>=1){s.acc-=1;spawn();}}
+  let top=pileTop();const keep=[];
+  for(const f of s.falling){f.y+=FALL*dt;
+    if(f.y>=top){s.landed.push({w:f.w,c:f.c,jx:f.jx,jy:f.jy});top=pileTop();}else keep.push(f);}
+  s.falling=keep;
+  if(s.seal&&!s.falling.length)finish("seal");
+  else if(s.left<=0){s.falling=[];finish("waktu");}}
+
+/* ===== Tampilan teks ===== */
+function ov(show,title,html,btn,color){
+  $("ov").hidden=!show;if(!show)return;
+  $("ot").textContent=title;$("ot").style.color=color||"var(--accent)";
+  $("ox").innerHTML=html;$("ob").textContent=btn;$("ov").firstElementChild.style.borderColor=color||"var(--accent)";
+  $("ob").focus({preventScroll:true});}
+function showMenu(){s.mode="menu";ov(true,"Timbang isi",
+  "<p>Tuang produk ke kemasan kosong sampai berat bersih sama dengan label.</p><p>Layar timbangan menampilkan berat kemasan ditambah isi. Tekan <b>Tare</b> supaya layar menunjukkan isi saja.</p><p>Kurang, berlebih jauh, atau kehabisan waktu berarti kalah. Kamu punya 3 nyawa.</p>","Mulai");}
+function showResult(){
+  const r=s.res,L=s.qg,n=r.n/T;let t,c,h;
+  if(r.r==="menang"){t="Pas!";c="var(--good)";h="<p>Isi "+n.toFixed(1)+" g untuk label "+L+" g (lebih "+(r.o/T).toFixed(1)+" g).</p><p><b>+"+s.pts+" poin</b></p>";}
+  else if(r.r==="kurang"){t="Kurang!";c="var(--bad)";h="<p>Isi "+n.toFixed(1)+" g, kurang "+((s.qn-r.n)/T).toFixed(1)+" g dari label "+L+" g.</p><p>Isi bersih tidak boleh kurang dari yang tertulis di label.</p>";}
+  else if(r.r==="berlebih"){t="Berlebih!";c="var(--warn)";h="<p>Isi "+n.toFixed(1)+" g, lebih "+(r.o/T).toFixed(1)+" g (batas wajar "+(r.lim/T).toFixed(1)+" g).</p><p>Bahan terbuang berarti rugi.</p>";}
+  else{t="Waktu habis!";c="var(--warn)";h="<p>Lini produksi menunggu terlalu lama.</p>";}
+  h+="<p>Nyawa tersisa: "+Math.max(0,s.lives)+"</p>";
+  ov(true,t,h,s.lives>0?"Lanjut":"Lihat skor akhir",c);}
+function showOver(){s.mode="over";
+  ov(true,"Game over","<p>Skor <b>"+s.score+"</b> (terbaik "+best+")</p><p>Timbangan berhasil: "+s.level+"</p><p>Bahan terbuang: "+(s.give/T).toFixed(1)+" g = Rp "+fmt(s.give/T*RP)+"</p>","Main lagi","var(--bad)");}
+function advance(){
+  if(s.mode==="menu"||s.mode==="over"){if(s.mode==="over"){s.lives=LIVES;s.score=0;s.level=0;s.give=0;}newRound();}
+  else if(s.mode==="result"){if(s.lives>0)newRound();else showOver();}}
+function hud(){
+  $("lv").textContent=s.level+1;$("sc").textContent=s.score;$("bs").textContent=best;
+  $("lf").textContent="\u2665".repeat(Math.max(0,s.lives))+"\u2661".repeat(LIVES-Math.max(0,s.lives));
+  const f=s.mode==="play"?Math.max(0,s.left/s.tl):s.mode==="result"?Math.max(0,s.left/s.tl):1;
+  const tb=$("tb");tb.style.width=(f*100)+"%";tb.style.background=f>.5?"var(--good)":f>.25?"var(--warn)":"var(--bad)";
+  const ing=s.mode!=="menu";
+  $("tg").innerHTML=ing?"Target isi bersih: <b>"+s.qg+" g</b>":"&nbsp;";
+  $("hn").textContent=ing&&s.hint?"Layar harus menunjukkan "+((s.qn+(s.tare?0:s.pouch))/T).toFixed(1)+" g":"";
+  const pz=$("pause"),lab=s.paused?"\u25B6 Lanjut":"\u275A\u275A Jeda";
+  if(pz.textContent!==lab)pz.textContent=lab;pz.disabled=s.mode!=="play";}
+
+/* ===== Gambar ===== */
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function chip(x,y,w,c){const r=3+w*.35;g.fillStyle=c;g.strokeStyle="#3b1a52";g.lineWidth=1;g.beginPath();g.ellipse(x,y,r+2,r,0,0,7);g.fill();g.stroke();}
+function draw(){
+  g.clearRect(0,0,W,H);g.fillStyle="#1f2a44";g.fillRect(0,0,W,H);
+  g.strokeStyle="#27365a";g.lineWidth=1;for(let i=0;i<W;i+=40){g.beginPath();g.moveTo(i,0);g.lineTo(i,PLAT);g.stroke();}
+  /* hopper */
+  g.fillStyle="#8d99ae";g.strokeStyle="#edf2f4";g.lineWidth=2;g.beginPath();g.moveTo(CX-110,14);g.lineTo(CX+110,14);g.lineTo(CX+20,104);g.lineTo(CX-20,104);g.closePath();g.fill();g.stroke();
+  g.fillStyle="#6c7a93";g.fillRect(CX-20,102,40,14);
+  g.fillStyle="#1f2a44";g.font="bold 15px sans-serif";g.textAlign="center";g.fillText("Keripik ubi ungu",CX,52);
+  /* timbangan */
+  g.fillStyle="#c0c7d1";g.fillRect(CX-100,PLAT,200,12);
+  g.fillStyle="#adb5c2";g.strokeStyle="#e5e9f0";g.beginPath();g.moveTo(CX-190,PLAT+12);g.lineTo(CX+190,PLAT+12);g.lineTo(CX+205,H-8);g.lineTo(CX-205,H-8);g.closePath();g.fill();g.stroke();
+  g.fillStyle="#b7d99a";g.strokeStyle="#1a2b12";g.lineWidth=4;g.fillRect(CX-130,PLAT+34,260,70);g.strokeRect(CX-130,PLAT+34,260,70);
+  g.fillStyle="#1a2b12";g.textAlign="right";
+  if(s.mode==="menu"){g.font="bold 36px 'Courier New',monospace";g.fillText("--.-",CX+96,PLAT+84);}
+  else{g.font="bold 42px 'Courier New',monospace";g.fillText(shown().toFixed(1),CX+96,PLAT+86);}
+  g.font="bold 16px 'Courier New',monospace";g.fillText("g",CX+120,PLAT+86);
+  if(s.tare){g.textAlign="left";g.font="bold 11px sans-serif";g.fillText("TARE",CX-122,PLAT+50);}
+  g.textAlign="center";g.fillStyle="#4a5568";g.font="bold 11px sans-serif";g.fillText("Timbangan elektronik (bertanda tera sah)",CX,PLAT+128);
+  /* kemasan */
+  const[x1,y1,x2,y2]=pouchBox();
+  g.fillStyle="#f4a261";g.strokeStyle="#e76f51";g.lineWidth=3;g.beginPath();g.moveTo(x1,y1+8);g.lineTo(x1+10,y1);g.lineTo(x2-10,y1);g.lineTo(x2,y1+8);g.lineTo(x2,y2);g.lineTo(x1,y2);g.closePath();g.fill();g.stroke();
+  g.lineWidth=1;for(let xx=x1+6;xx<x2-4;xx+=8){g.beginPath();g.moveTo(xx,y1+3);g.lineTo(xx,y1+11);g.stroke();}
+  g.fillStyle="#5e2a84";g.font="bold 18px sans-serif";g.fillText("UBIBIKU",CX,y1+30);
+  g.fillStyle="#1f2a44";g.font="bold 12px sans-serif";g.fillText("Berat bersih "+(s.mode==="menu"?"?":s.qg)+" g",CX,y1+52);
+  const[wx1,wy1,wx2,wy2]=winBox();g.fillStyle="#fff3e0";g.strokeStyle="#e76f51";g.lineWidth=2;g.fillRect(wx1,wy1,wx2-wx1,wy2-wy1);g.strokeRect(wx1,wy1,wx2-wx1,wy2-wy1);
+  if(s.mode!=="menu"){
+    s.landed.forEach((c,i)=>{const layer=Math.floor(i/PER),col=i%PER;
+      const x=wx1+12+col*(wx2-wx1-24)/(PER-1)+c.jx;let y=wy2-6-layer*STEP+c.jy;y=Math.max(y,wy1+4+(layer%2)*2);chip(x,y,c.w,c.c);});
+    s.falling.forEach(f=>chip(f.x,f.y,f.w,f.c));}
+  if(s.paused){g.fillStyle="rgba(0,0,0,.55)";g.fillRect(0,0,W,H);g.fillStyle="#fff";g.font="bold 30px sans-serif";g.textAlign="center";g.fillText("Jeda",CX,H/2);}
+}
+
+/* ===== Loop ===== */
+let last=performance.now();
+function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;
+  if(s.mode==="play"&&!s.paused)update(dt);
+  draw();hud();requestAnimationFrame(loop);}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&s.mode==="play")s.paused=true;else if(!document.hidden&&s.paused){s.paused=false;last=performance.now();}});
+
+/* ===== Input ===== */
+const pb=$("pour");
+function down(e){e.preventDefault();s.ptr=true;pb.classList.add("on");try{pb.setPointerCapture(e.pointerId)}catch(x){}pourStart();}
+function up(){s.ptr=false;pb.classList.remove("on");}
+pb.addEventListener("pointerdown",down);
+["pointerup","pointercancel","lostpointercapture"].forEach(n=>pb.addEventListener(n,up));
+pb.addEventListener("contextmenu",e=>e.preventDefault());
+$("take").addEventListener("click",take);$("tare").addEventListener("click",tare);$("seal").addEventListener("click",seal);$("pause").addEventListener("click",togglePause);
+$("ob").addEventListener("click",advance);
+$("hint").addEventListener("click",()=>{s.hint=!s.hint;$("hint").textContent="Bantuan target: "+(s.hint?"hidup":"mati");});
+document.addEventListener("keydown",e=>{
+  if(e.code==="Space"){if(e.target.tagName==="BUTTON"&&e.target!==pb&&s.mode!=="play")return;e.preventDefault();
+    if(!e.repeat&&!s.key){s.key=true;pb.classList.add("on");pourStart();}}
+  else if(e.key==="Backspace")take();
+  else if(e.key==="t"||e.key==="T")tare();
+  else if(e.key==="h"||e.key==="H")$("hint").click();
+  else if(e.key==="Enter"){if(s.mode==="play"){e.preventDefault();seal();}}
+  else if(e.key==="p"||e.key==="P")togglePause();});
+document.addEventListener("keyup",e=>{if(e.code==="Space"){s.key=false;if(!s.ptr)pb.classList.remove("on");}});
+
+window.__timbangIsi={judge,overLimit,timeLimit,rate};
+showMenu();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
