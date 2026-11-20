@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Timbang Isi: latihan BDKT</title>
+<title>Game Timbang Berat BDKT</title>
 <style>
 :root{--bg:#e9edf4;--fg:#1a2236;--card:#ffffff;--muted:#59627a;--line:#ccd3e0;--good:#0b8f6a;--warn:#a86f00;--bad:#c42b52;--accent:#6d3a9c;--onacc:#ffffff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -47,7 +47,7 @@ button small{display:block;font-weight:400;color:var(--muted);font-size:11px}
 </head>
 <body>
 <div class="wrap">
-<h1>Timbang Isi: latihan BDKT</h1>
+<h1>Game Timbang Berat BDKT</h1>
 <div class="stats"><span>Level <b id="lv">1</b></span><span>Skor <b id="sc">0</b></span><span>Terbaik <b id="bs">0</b></span><span class="lives" id="lf" aria-label="Nyawa"></span></div>
 <div class="bar"><i id="tb"></i></div>
 <div class="stage">
@@ -57,7 +57,7 @@ button small{display:block;font-weight:400;color:var(--muted);font-size:11px}
 <div class="info"><div><div id="tg"></div><div id="hn"></div></div><button id="pause" type="button">❚❚ Jeda</button></div>
 <div class="ctl">
 <button id="pour">Tuang<small>tahan tombol atau spasi, makin lama makin deras</small></button>
-<button id="take">Ambil 1 keping<small>Backspace</small></button>
+<button id="take">Ambil Kembali<small>Backspace</small></button>
 <button id="tare">Tare<small>tombol T</small></button>
 <button id="seal">Segel<small>selesai menimbang (Enter)</small></button>
 </div>
@@ -155,7 +155,7 @@ function hud(){
   const f=s.mode==="play"?Math.max(0,s.left/s.tl):s.mode==="result"?Math.max(0,s.left/s.tl):1;
   const tb=$("tb");tb.style.width=(f*100)+"%";tb.style.background=f>.5?"var(--good)":f>.25?"var(--warn)":"var(--bad)";
   const ing=s.mode!=="menu";
-  $("tg").innerHTML=ing?"Target isi bersih: <b>"+s.qg+" g</b>":"&nbsp;";
+  $("tg").innerHTML=ing?"Target berat bersih: <b>"+s.qg+" g</b>":"&nbsp;";
   $("hn").textContent=ing&&s.hint?"Layar harus menunjukkan "+((s.qn+(s.tare?0:s.pouch))/T).toFixed(1)+" g":"";
   const pz=$("pause"),lab=s.paused?"\u25B6 Lanjut":"\u275A\u275A Jeda";
   if(pz.textContent!==lab)pz.textContent=lab;pz.disabled=s.mode!=="play";}
