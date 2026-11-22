@@ -4,225 +4,341 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Game Timbang Berat BDKT</title>
+<meta name="description" content="Game latihan menimbang isi kemasan sesuai label (BDKT): jumlah isi, berat bersih, bobot tuntas, dan isi bersih mL. 100 level.">
+<meta property="og:title" content="Game Timbang Berat BDKT">
+<meta property="og:description" content="Latihan menimbang isi kemasan tepat sesuai label. Bisa dimainkan di HP dan laptop.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#6d3a9c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
 <style>
-:root{--bg:#e9edf4;--fg:#1a2236;--card:#ffffff;--muted:#59627a;--line:#ccd3e0;--good:#0b8f6a;--warn:#a86f00;--bad:#c42b52;--accent:#6d3a9c;--onacc:#ffffff;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#e9edf4;--fg:#1a2236;--card:#fff;--muted:#59627a;--line:#ccd3e0;--good:#0b8f6a;--warn:#a86f00;--bad:#c42b52;--accent:#6d3a9c;--onacc:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10162a;--fg:#eaeef8;--card:#1a2340;--muted:#9aa6c4;--line:#2d3a5e;--good:#34d6a6;--warn:#ffcf5a;--bad:#ff7391;--accent:#c78cf0;--onacc:#1a1030}}
 :root[data-theme="dark"]{--bg:#10162a;--fg:#eaeef8;--card:#1a2340;--muted:#9aa6c4;--line:#2d3a5e;--good:#34d6a6;--warn:#ffcf5a;--bad:#ff7391;--accent:#c78cf0;--onacc:#1a1030}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 "Trebuchet MS","Segoe UI",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
 .wrap{max-width:460px;margin:0 auto;padding:10px 12px 18px}
-h1{font-size:19px;margin:2px 0 8px;letter-spacing:.2px}
-.stats{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
-.stats b{color:var(--fg)}
+h1{font-size:19px;margin:2px 0 8px}
+.stats{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:4px}.stats span:nth-child(2){text-align:center;color:var(--fg);font-size:16px;font-weight:700}.stats span:nth-child(3){text-align:right}.stats b{color:var(--fg)}
 .lives{color:var(--bad);font-size:17px;letter-spacing:2px}
 .bar{height:14px;background:var(--card);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin:8px 0}
-.bar i{display:block;height:100%;width:100%;background:var(--good);transition:background .2s}
+.bar i{display:block;height:100%;width:100%;background:var(--good)}
 .stage{position:relative}
-canvas{display:block;width:100%;height:auto;aspect-ratio:420/500;border-radius:12px;touch-action:none;background:#1f2a44}
-.info{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:8px 0;gap:8px}
-#hn{color:var(--warn);min-height:1.4em}
-.ctl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-button{font:inherit;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;padding:14px 8px;touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
+canvas{display:block;width:100%;height:auto;aspect-ratio:420/500;border-radius:12px;touch-action:none;background:#1b2a52}
+.info{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:8px 0;gap:8px}#hn{display:none}
+.ctl{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+button{font:inherit;font-weight:700;border:2px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;padding:12px 6px;touch-action:manipulation;user-select:none;-webkit-user-select:none;cursor:pointer}
 button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 button small{display:block;font-weight:400;color:var(--muted);font-size:11px}
-#pour{grid-column:1/3;background:var(--accent);color:var(--onacc);border-color:var(--accent);font-size:20px;padding:20px 8px}
-#pour small{color:inherit;opacity:.8}
-#pour.on{filter:brightness(1.25)}
-#seal{grid-column:1/3;background:var(--good);color:var(--onacc);border-color:var(--good);font-size:20px;padding:20px 8px}
-#seal small{color:inherit;opacity:.85}
-#pause{background:#ffcc2a;border-color:#e0a800;color:#1a2236;padding:10px 14px;white-space:nowrap;flex:none}
-#pause:disabled{opacity:.45;cursor:default}
-.tog{margin-top:8px;width:100%;font-weight:400;font-size:13px;padding:8px}
-#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px}
-#ov[hidden]{display:none}
-#ov div{background:var(--card);border:3px solid var(--accent);border-radius:14px;padding:16px 14px;text-align:center;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.35)}
-#ov h2{margin:0 0 8px;font-size:26px}
-#ov p{margin:6px 0;font-size:14px}
-#ov button{margin-top:10px;background:var(--accent);color:var(--onacc);border-color:var(--accent);width:100%}
-.rule{margin-top:12px;font-size:12px;color:var(--muted)}
-@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+#pour{grid-column:span 4;font-size:20px;padding:20px 8px}#pour2{grid-column:span 2;font-size:15px;padding:10px 4px}#take,#tare,#swap{grid-column:span 2}#seal{grid-column:1/7;font-size:20px;padding:20px 8px}
+#pour{background:var(--accent);color:var(--onacc);border-color:var(--accent)}#pour small,#seal small{color:inherit;opacity:.85}
+#pour.on,#pour2.on{filter:brightness(1.3)}
+#seal{background:var(--good);color:var(--onacc);border-color:var(--good)}
+#pause{background:#ffcc2a;border-color:#e0a800;color:#1a2236;padding:10px 14px;white-space:nowrap;flex:none}#pause:disabled{opacity:.45;cursor:default}
+.tg{display:flex;gap:8px;margin-top:8px}.tg button{flex:1;font-weight:400;font-size:13px;padding:8px}
+#ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px}#ov[hidden]{display:none}
+#ov>div{background:var(--card);border:3px solid var(--accent);border-radius:14px;padding:14px;text-align:center;width:100%;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#ov h2{margin:0 0 6px;font-size:25px}#ov p{margin:5px 0;font-size:14px}#ov .st{font-size:34px;letter-spacing:4px;color:#e0a800}
+#ov button{margin-top:8px;width:100%;background:var(--accent);color:var(--onacc);border-color:var(--accent)}#ov #ob2{background:var(--card);color:var(--fg);border-color:var(--line)}
+#pour2{background:#c9a8f0;border-color:#b58ee6;color:#2b1347}#tare{background:#3b82f6;border-color:#2f6fe0;color:#fff}#take{background:#ffd23f;border-color:#e0b000;color:#1a2236}#swap{background:#8de0b0;border-color:#5cc78d;color:#0f3d26;font-size:13px}#rst{background:#e5484d;border-color:#c93338;color:#fff;padding:10px 12px}
+#take small,#tare small,#swap small,#pour2 small{color:inherit;opacity:.8}
+.bn,.buy{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.buy{margin-top:6px}.bn button{position:relative;padding:8px 4px;font-size:14px}.bn b.c{position:absolute;top:-7px;right:-4px;background:var(--bad);color:#fff;border-radius:10px;min-width:22px;padding:1px 6px;font-size:12px}.bn button.z{filter:grayscale(1) brightness(.75)}.buy button{background:#f5c542;border-color:#d9a400;color:#3a2a00;font-size:12px;padding:8px 2px;font-weight:700}
+.trust{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}.trust .bar{flex:1;margin:4px 0}.trust i{transition:width .3s}.big{font-size:24px;font-weight:700;color:var(--fg)}
+.hb{position:absolute;right:8px;top:64px;display:flex;flex-direction:column;gap:10px}.hb button{position:relative;width:42px;height:42px;border-radius:50%;padding:0;font-size:21px;line-height:1;background:rgba(255,255,255,.93);border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.45);color:#1a2236}.hb b.c{position:absolute;top:-6px;right:-6px;background:#e5484d;color:#fff;border-radius:10px;min-width:19px;padding:0 5px;font-size:11px;line-height:17px}.hb button.z{filter:grayscale(1) brightness(.55)}.hb button:active{transform:scale(.92)}
+.ib{width:100%;margin-top:8px;font-weight:400;font-size:13px;padding:8px}
+.trophy{font-size:84px;line-height:1.1;animation:pop 1s,glow 1.2s 1s infinite}#ot.win{background:linear-gradient(90deg,#ff5a7a,#ffcc2a,#34d6a6,#6ec6ff,#c78cf0);-webkit-background-clip:text;background-clip:text;color:transparent!important;font-size:27px;animation:pop .8s}
+.qb{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:4px 0 8px}.qb i{display:block;height:100%;width:100%;background:var(--accent)}#up p{margin:0}
+.rule{margin-top:12px;font-size:11.5px;line-height:1.45;color:var(--muted)}
+@keyframes pop{0%{transform:scale(.3)}60%{transform:scale(1.3)}100%{transform:scale(1)}}@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}@keyframes glow{0%,100%{text-shadow:0 0 0 #ffcc2a}50%{text-shadow:0 0 18px #ffcc2a,0 0 34px #ff9f1c}}
+#ot.pop{animation:pop .6s}#ot.shk{animation:shk .4s}#ot.perf{animation:pop .7s,glow .9s .7s 3;font-size:30px}
+.roul{font-size:68px;margin:6px 0;line-height:1.1}.roul.win{animation:pop .8s}#ov .qq{font-size:15px;font-weight:700;margin:4px 0 8px}#ov button.op{text-align:left;font-size:13px;padding:9px 10px;margin-top:6px}#ox .sc{font-size:20px}
+#up{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:3;background:rgba(10,15,35,.85);border:3px solid #ffcc2a;border-radius:16px;padding:14px 22px;color:#fff;min-width:210px}#up[hidden]{display:none}
+#up .o{display:inline-block;font-size:34px;animation:oldic 1.1s forwards}#up .n{display:inline-block;animation:newic 1.5s .5s both}@keyframes oldic{to{transform:scale(.1) rotate(-120deg);opacity:0}}@keyframes newic{from{transform:scale(0) rotate(200deg);opacity:0}70%{transform:scale(1.35) rotate(0)}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Game Timbang Berat BDKT</h1>
-<div class="stats"><span>Level <b id="lv">1</b></span><span>Skor <b id="sc">0</b></span><span>Terbaik <b id="bs">0</b></span><span class="lives" id="lf" aria-label="Nyawa"></span></div>
-<div class="bar"><i id="tb"></i></div>
-<div class="stage">
-<canvas id="cv" aria-label="Timbangan elektronik dengan kemasan kosong"></canvas>
-<div id="ov"><div><h2 id="ot"></h2><div id="ox"></div><button id="ob"></button></div></div>
-</div>
-<div class="info"><div><div id="tg"></div><div id="hn"></div></div><button id="pause" type="button">❚❚ Jeda</button></div>
+<div class="stats"><span>Level <b id="lv">1</b></span><span>Skor <b id="sc">0</b></span><span>Terbaik <b id="bs">0</b></span></div>
+<div class="stats"><span>Kas <b id="ks">Rp 0</b></span><span>Tepat beruntun <b id="cb">0</b></span><span><b id="rk">Magang</b></span></div>
+<div class="trust"><span>Kepercayaan <b id="tr">100%</b></span><div class="bar"><i id="trb"></i></div></div><div class="bar"><i id="tb"></i></div>
+<div class="stage"><canvas id="cv" aria-label="Timbangan elektronik dan kemasan"></canvas>
+<div class="hb"><button id="h1" type="button" aria-label="Bantuan target takaran">🎯<b class="c" id="c1">1</b></button><button id="h2" type="button" aria-label="Bantuan waktu dua kali lebih lama">⏳<b class="c" id="c2">1</b></button><button id="h3" type="button" aria-label="Bantuan perisai">🛡️<b class="c" id="c3">1</b></button></div>
+<div id="ov"><div><h2 id="ot"></h2><div id="ox"></div><button id="ob"></button><button id="ob2" hidden></button></div></div><div id="up" hidden></div></div>
+<div class="info"><div><div id="tg">&nbsp;</div><div id="hn"></div></div><div style="display:flex;gap:8px"><button id="rst" type="button">↺ Reset · Del</button><button id="pause" type="button">❚❚ Jeda · Esc</button></div></div>
 <div class="ctl">
-<button id="pour">Tuang<small>tahan tombol atau spasi, makin lama makin deras</small></button>
+<button id="pour">Tuang Cepat<small>Spasi</small></button>
+<button id="pour2">Tuang Halus<small>Shift</small></button>
 <button id="take">Ambil Kembali<small>Backspace</small></button>
-<button id="tare">Tare<small>tombol T</small></button>
-<button id="seal">Segel<small>selesai menimbang (Enter)</small></button>
+<button id="swap">Ganti Kemasan<small>Y</small></button>
+<button id="tare">Tare<small>T</small></button>
+<button id="seal">Segel<small>Enter</small></button>
 </div>
-<button class="tog" id="hint">Bantuan target: mati</button>
-<p class="rule">Isi kurang dari label = kalah. Berlebih lebih dari 10% label (minimal 1 g) = bahan terbuang, kalah. Waktu habis = kalah. Aturan ini sengaja lebih ketat daripada batas kesalahan yang diizinkan di Permendag 31/2011.</p>
+
+<div class="buy"><button id="b1">🎯 Rp 5.000 · Q</button><button id="b2">⏳ Rp 5.000 · W</button><button id="b3">🛡️ Rp 5.000 · E</button></div>
+<div class="tg"><button id="snd">Suara (I): hidup</button><button id="vib">Getar (O): hidup</button><button id="fx">Efek (P): hidup</button></div>
+<button class="ib" id="inf" type="button" aria-expanded="false">ⓘ Informasi</button>
+<p class="rule" id="infp" hidden><b>Cara bermain.</b> Tuang produk sampai isi sama dengan berat bersih pada label. <b>Kurang</b> dari label: kepercayaan turun (2 : 1, maksimal 20% per timbangan), tanpa skor, walau untung tetap maksimal 10% dari nilai label. <b>Lebih</b> dari label: kepercayaan naik (1 : 1, maksimal 10%), skor berkurang 10 tiap 1% kelebihan, dan untung berkurang. <b>Lebih dari 10%</b>: tanpa skor, tanpa untung, dan deposit berkurang sebesar nilai kelebihan di atas 10%. Waktu habis: timbangan dinilai apa adanya. Kepercayaan 0% berarti kalah, batas maksimal 120%. Skor maksimal 10.000 (100 level x 100), belum termasuk bonus beruntun.<br><b>Mode:</b> jumlah isi (hitung butir), berat bersih, bobot tuntas (isi produk, tekan Isi Cairan, lalu isi cairan sampai berat bersih), dan isi bersih mL (kalikan dengan massa jenis di corong). Isi lebih dari 10% label tumpah dan mengotori atau merusak timbangan.<br><b>Bantuan:</b> 🎯 angka target di dekat label, ⏳ waktu 2 kali lebih lama, 🛡️ menahan kepercayaan saat kurang. Kuis pelabelan sebelum timbangan ke-4, 9, 14, dan seterusnya; jawab dalam 4 sampai 8 detik; jawaban benar memberi satu bantuan acak, salah atau terlambat tidak. Kemasan bocor: isi berkurang sendiri, ganti kemasan memotong deposit Rp 200 per gram kemasan dan mengulang waktu. Bantuan hanya bisa dibeli jika deposit cukup.<br><b>Pintasan:</b> Spasi tuang cepat · Shift tuang halus · Backspace ambil kembali · T tare · Y ganti kemasan · Enter segel · Esc jeda · Del reset · 1 2 3 bantuan · Q W E beli · I O P suara, getar, efek. Ctrl tidak dipakai agar tidak bentrok dengan pintasan browser.</p>
 </div>
 <script>
-(()=>{
-"use strict";
-/* ===== Pengaturan (satuan berat: persepuluh gram) ===== */
-const T=10,NET_MIN=10,NET_MAX=100,POUCH_MIN=10,POUCH_MAX=100,CHIP_MIN=3,CHIP_MAX=10;
-const OVER_PCT=.10,OVER_MIN=10,LIVES=3,RP=200,MAXRATE=18,FALL=900;
-const W=420,H=500,CX=210,PLAT=340,PW=150,PH=180,PER=12,STEP=6;
-const $=id=>document.getElementById(id);
-const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
-const cv=$("cv"),g=cv.getContext("2d");
-const dpr=Math.min(3,window.devicePixelRatio||1);
-cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0);
-
-/* ===== Logika murni ===== */
-const overLimit=qn=>Math.max(OVER_MIN,Math.round(qn*OVER_PCT));
-function judge(net,qn){const lim=overLimit(qn);
-  if(net<qn)return["kurang",0,lim];
-  const o=net-qn;return o>lim?["berlebih",o,lim]:["menang",o,lim];}
-const timeLimit=(qg,lv)=>Math.max(6,Math.max(6,4+qg/8)*Math.max(.6,1-.04*lv));
-const rate=h=>Math.min(MAXRATE,3+14*h);
-const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,".");
-
-/* ===== Status ===== */
-let best=0;try{best=+localStorage.getItem("timbangIsiBest")||0}catch(e){}
-const s={mode:"menu",lives:LIVES,score:0,level:0,give:0,hint:false,ptr:false,key:false,paused:false,
-  qn:0,qg:0,pouch:0,landed:[],falling:[],tare:0,tl:1,left:1,held:0,acc:0,seal:false,res:null,pts:0};
-const net=()=>s.landed.reduce((a,c)=>a+c.w,0);
-const shown=()=>(s.pouch+net()-s.tare)/T;
-const pouring=()=>s.ptr||s.key;
-const pouchBox=()=>[CX-PW/2,PLAT-2-PH,CX+PW/2,PLAT-2];
-const winBox=()=>{const b=pouchBox();return[b[0]+12,b[1]+72,b[2]-12,b[3]-10]};
-const pileTop=()=>winBox()[3]-6-Math.floor(s.landed.length/PER)*STEP;
-
-function newRound(){
-  s.qg=rnd(NET_MIN,NET_MAX);s.qn=s.qg*T;s.pouch=rnd(POUCH_MIN,POUCH_MAX);
-  s.landed=[];s.falling=[];s.tare=0;s.tl=timeLimit(s.qg,s.level);s.left=s.tl;
-  s.held=0;s.acc=0;s.seal=false;s.mode="play";s.paused=false;s.res=null;ov(false);}
-function spawn(){s.falling.push({x:CX+(Math.random()*28-14),y:118,w:rnd(CHIP_MIN,CHIP_MAX),
-  c:["#7b2d8e","#9b4dbb","#5e2a84","#b06bd0"][rnd(0,3)],jx:Math.random()*6-3,jy:Math.random()*4-2});}
-function pourStart(){if(s.mode==="play"&&!s.paused&&!s.seal){s.held=0;s.acc=0;spawn();}}
-function take(){if(s.mode==="play"&&!s.paused&&s.landed.length)s.landed.pop();}
-function tare(){if(s.mode==="play"&&!s.paused)s.tare=s.tare?0:s.pouch+net();}
-function seal(){if(s.mode==="play"&&!s.paused)s.seal=true;}
-function togglePause(){if(s.mode!=="play")return;s.paused=!s.paused;if(s.paused){s.ptr=false;s.key=false;$("pour").classList.remove("on");}}
-
-function finish(reason){
-  const n=net();let r,o=0,lim=overLimit(s.qn);
-  if(reason==="waktu")r="waktu";else[r,o,lim]=judge(n,s.qn);
-  s.res={r,n,o,lim};s.pts=0;
-  if(r==="menang"){s.pts=100+Math.round(100*(1-o/lim))+Math.round(s.left*10);s.score+=s.pts;s.level++;s.give+=o;}
-  else{s.lives--;if(r==="berlebih")s.give+=o;}
-  if(s.score>best){best=s.score;try{localStorage.setItem("timbangIsiBest",best)}catch(e){}}
-  s.mode="result";s.ptr=false;s.key=false;$("pour").classList.remove("on");showResult();}
-
-function update(dt){
-  s.left-=dt;
-  if(pouring()&&!s.seal){s.held+=dt;s.acc+=rate(s.held)*dt;while(s.acc>=1){s.acc-=1;spawn();}}
-  let top=pileTop();const keep=[];
-  for(const f of s.falling){f.y+=FALL*dt;
-    if(f.y>=top){s.landed.push({w:f.w,c:f.c,jx:f.jx,jy:f.jy});top=pileTop();}else keep.push(f);}
-  s.falling=keep;
-  if(s.seal&&!s.falling.length)finish("seal");
-  else if(s.left<=0){s.falling=[];finish("waktu");}}
-
-/* ===== Tampilan teks ===== */
-function ov(show,title,html,btn,color){
-  $("ov").hidden=!show;if(!show)return;
-  $("ot").textContent=title;$("ot").style.color=color||"var(--accent)";
-  $("ox").innerHTML=html;$("ob").textContent=btn;$("ov").firstElementChild.style.borderColor=color||"var(--accent)";
-  $("ob").focus({preventScroll:true});}
-function showMenu(){s.mode="menu";ov(true,"Timbang isi",
-  "<p>Tuang produk ke kemasan kosong sampai berat bersih sama dengan label.</p><p>Layar timbangan menampilkan berat kemasan ditambah isi. Tekan <b>Tare</b> supaya layar menunjukkan isi saja.</p><p>Kurang, berlebih jauh, atau kehabisan waktu berarti kalah. Kamu punya 3 nyawa.</p>","Mulai");}
-function showResult(){
-  const r=s.res,L=s.qg,n=r.n/T;let t,c,h;
-  if(r.r==="menang"){t="Pas!";c="var(--good)";h="<p>Isi "+n.toFixed(1)+" g untuk label "+L+" g (lebih "+(r.o/T).toFixed(1)+" g).</p><p><b>+"+s.pts+" poin</b></p>";}
-  else if(r.r==="kurang"){t="Kurang!";c="var(--bad)";h="<p>Isi "+n.toFixed(1)+" g, kurang "+((s.qn-r.n)/T).toFixed(1)+" g dari label "+L+" g.</p><p>Isi bersih tidak boleh kurang dari yang tertulis di label.</p>";}
-  else if(r.r==="berlebih"){t="Berlebih!";c="var(--warn)";h="<p>Isi "+n.toFixed(1)+" g, lebih "+(r.o/T).toFixed(1)+" g (batas wajar "+(r.lim/T).toFixed(1)+" g).</p><p>Bahan terbuang berarti rugi.</p>";}
-  else{t="Waktu habis!";c="var(--warn)";h="<p>Lini produksi menunggu terlalu lama.</p>";}
-  h+="<p>Nyawa tersisa: "+Math.max(0,s.lives)+"</p>";
-  ov(true,t,h,s.lives>0?"Lanjut":"Lihat skor akhir",c);}
-function showOver(){s.mode="over";
-  ov(true,"Game over","<p>Skor <b>"+s.score+"</b> (terbaik "+best+")</p><p>Timbangan berhasil: "+s.level+"</p><p>Bahan terbuang: "+(s.give/T).toFixed(1)+" g = Rp "+fmt(s.give/T*RP)+"</p>","Main lagi","var(--bad)");}
-function advance(){
-  if(s.mode==="menu"||s.mode==="over"){if(s.mode==="over"){s.lives=LIVES;s.score=0;s.level=0;s.give=0;}newRound();}
-  else if(s.mode==="result"){if(s.lives>0)newRound();else showOver();}}
-function hud(){
-  $("lv").textContent=s.level+1;$("sc").textContent=s.score;$("bs").textContent=best;
-  $("lf").textContent="\u2665".repeat(Math.max(0,s.lives))+"\u2661".repeat(LIVES-Math.max(0,s.lives));
-  const f=s.mode==="play"?Math.max(0,s.left/s.tl):s.mode==="result"?Math.max(0,s.left/s.tl):1;
-  const tb=$("tb");tb.style.width=(f*100)+"%";tb.style.background=f>.5?"var(--good)":f>.25?"var(--warn)":"var(--bad)";
-  const ing=s.mode!=="menu";
-  $("tg").innerHTML=ing?"Target berat bersih: <b>"+s.qg+" g</b>":"&nbsp;";
-  $("hn").textContent=ing&&s.hint?"Layar harus menunjukkan "+((s.qn+(s.tare?0:s.pouch))/T).toFixed(1)+" g":"";
-  const pz=$("pause"),lab=s.paused?"\u25B6 Lanjut":"\u275A\u275A Jeda";
-  if(pz.textContent!==lab)pz.textContent=lab;pz.disabled=s.mode!=="play";}
-
-/* ===== Gambar ===== */
-function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
-function chip(x,y,w,c){const r=3+w*.35;g.fillStyle=c;g.strokeStyle="#3b1a52";g.lineWidth=1;g.beginPath();g.ellipse(x,y,r+2,r,0,0,7);g.fill();g.stroke();}
-function draw(){
-  g.clearRect(0,0,W,H);g.fillStyle="#1f2a44";g.fillRect(0,0,W,H);
-  g.strokeStyle="#27365a";g.lineWidth=1;for(let i=0;i<W;i+=40){g.beginPath();g.moveTo(i,0);g.lineTo(i,PLAT);g.stroke();}
-  /* hopper */
-  g.fillStyle="#8d99ae";g.strokeStyle="#edf2f4";g.lineWidth=2;g.beginPath();g.moveTo(CX-110,14);g.lineTo(CX+110,14);g.lineTo(CX+20,104);g.lineTo(CX-20,104);g.closePath();g.fill();g.stroke();
-  g.fillStyle="#6c7a93";g.fillRect(CX-20,102,40,14);
-  g.fillStyle="#1f2a44";g.font="bold 15px sans-serif";g.textAlign="center";g.fillText("Keripik ubi ungu",CX,52);
-  /* timbangan */
-  g.fillStyle="#c0c7d1";g.fillRect(CX-100,PLAT,200,12);
-  g.fillStyle="#adb5c2";g.strokeStyle="#e5e9f0";g.beginPath();g.moveTo(CX-190,PLAT+12);g.lineTo(CX+190,PLAT+12);g.lineTo(CX+205,H-8);g.lineTo(CX-205,H-8);g.closePath();g.fill();g.stroke();
-  g.fillStyle="#b7d99a";g.strokeStyle="#1a2b12";g.lineWidth=4;g.fillRect(CX-130,PLAT+34,260,70);g.strokeRect(CX-130,PLAT+34,260,70);
-  g.fillStyle="#1a2b12";g.textAlign="right";
-  if(s.mode==="menu"){g.font="bold 36px 'Courier New',monospace";g.fillText("--.-",CX+96,PLAT+84);}
-  else{g.font="bold 42px 'Courier New',monospace";g.fillText(shown().toFixed(1),CX+96,PLAT+86);}
-  g.font="bold 16px 'Courier New',monospace";g.fillText("g",CX+120,PLAT+86);
-  if(s.tare){g.textAlign="left";g.font="bold 11px sans-serif";g.fillText("TARE",CX-122,PLAT+50);}
-  g.textAlign="center";g.fillStyle="#4a5568";g.font="bold 11px sans-serif";g.fillText("Timbangan elektronik (bertanda tera sah)",CX,PLAT+128);
-  /* kemasan */
-  const[x1,y1,x2,y2]=pouchBox();
-  g.fillStyle="#f4a261";g.strokeStyle="#e76f51";g.lineWidth=3;g.beginPath();g.moveTo(x1,y1+8);g.lineTo(x1+10,y1);g.lineTo(x2-10,y1);g.lineTo(x2,y1+8);g.lineTo(x2,y2);g.lineTo(x1,y2);g.closePath();g.fill();g.stroke();
-  g.lineWidth=1;for(let xx=x1+6;xx<x2-4;xx+=8){g.beginPath();g.moveTo(xx,y1+3);g.lineTo(xx,y1+11);g.stroke();}
-  g.fillStyle="#5e2a84";g.font="bold 18px sans-serif";g.fillText("UBIBIKU",CX,y1+30);
-  g.fillStyle="#1f2a44";g.font="bold 12px sans-serif";g.fillText("Berat bersih "+(s.mode==="menu"?"?":s.qg)+" g",CX,y1+52);
-  const[wx1,wy1,wx2,wy2]=winBox();g.fillStyle="#fff3e0";g.strokeStyle="#e76f51";g.lineWidth=2;g.fillRect(wx1,wy1,wx2-wx1,wy2-wy1);g.strokeRect(wx1,wy1,wx2-wx1,wy2-wy1);
-  if(s.mode!=="menu"){
-    s.landed.forEach((c,i)=>{const layer=Math.floor(i/PER),col=i%PER;
-      const x=wx1+12+col*(wx2-wx1-24)/(PER-1)+c.jx;let y=wy2-6-layer*STEP+c.jy;y=Math.max(y,wy1+4+(layer%2)*2);chip(x,y,c.w,c.c);});
-    s.falling.forEach(f=>chip(f.x,f.y,f.w,f.c));}
-  if(s.paused){g.fillStyle="rgba(0,0,0,.55)";g.fillRect(0,0,W,H);g.fillStyle="#fff";g.font="bold 30px sans-serif";g.textAlign="center";g.fillText("Jeda",CX,H/2);}
-}
-
-/* ===== Loop ===== */
-let last=performance.now();
-function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;
-  if(s.mode==="play"&&!s.paused)update(dt);
-  draw();hud();requestAnimationFrame(loop);}
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&s.mode==="play")s.paused=true;else if(!document.hidden&&s.paused){s.paused=false;last=performance.now();}});
-
-/* ===== Input ===== */
-const pb=$("pour");
-function down(e){e.preventDefault();s.ptr=true;pb.classList.add("on");try{pb.setPointerCapture(e.pointerId)}catch(x){}pourStart();}
-function up(){s.ptr=false;pb.classList.remove("on");}
-pb.addEventListener("pointerdown",down);
-["pointerup","pointercancel","lostpointercapture"].forEach(n=>pb.addEventListener(n,up));
-pb.addEventListener("contextmenu",e=>e.preventDefault());
+(()=>{"use strict";
+const T=10,OVER_PCT=.1,OVER_MIN=10,LIVES=3,MAXRATE=18,FALL=900,W=420,H=500,CX=210,PLAT=340,PW=150,PH=214;
+const $=id=>document.getElementById(id);let R=Math.random;const rnd=(a,b)=>a+Math.floor(R()*(b-a+1));
+const cv=$("cv"),g=cv.getContext("2d"),dpr=Math.min(3,window.devicePixelRatio||1);cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0);
+const P=[{id:"permen",n:"Permen buah",b:"MANISKU",ic:"🍬",kind:"p",disc:1,c1:"#5fbf7f",c2:"#c9f0d5",ac:"#1f6b3a",cs:[10,10],col:["#ff5a7a","#ffb13b","#7bd35b","#c77dff","#47c1ff"],sh:3,per:14,st:7,m:.6,p:10},
+{id:"wafer",n:"Wafer vanila",b:"WAFERKU",ic:"🧇",kind:"p",disc:1,c1:"#e9dfc9",c2:"#fffaf0",ac:"#c0392b",cs:[30,30],col:["#f1d9a0","#ecd08c","#f6e2b3"],sh:4,per:6,st:9,m:.2,p:50},
+{id:"coklat",n:"Coklat bar",b:"COKLATKU",ic:"🍫",kind:"p",disc:1,c1:"#6b3d17",c2:"#d4a73c",ac:"#ffe9a8",cs:[50,50],col:["#5a3416","#6b3d17","#4a2a10"],sh:5,per:5,st:11,m:.12,p:60},
+{id:"ubi",n:"Keripik ubi",b:"UBIKU",ic:"🍠",kind:"p",c1:"#4a1f6b",c2:"#8e4fc4",ac:"#ffcc2a",cs:[3,10],col:["#7b2d8e","#9b4dbb","#5e2a84","#b06bd0"],sh:0,per:12,st:6,m:1,p:200},
+{id:"kacang",n:"Kacang oven",b:"KACANGKU",ic:"🥜",kind:"p",c1:"#4f2d12",c2:"#a0642a",ac:"#ffe08a",cs:[2,5],col:["#c8863a","#a8692a","#d9a05b"],sh:1,per:16,st:4,m:1.7,p:300},
+{id:"tepung",n:"Tepung terigu",b:"TEPUNGKU",ic:"🌾",kind:"p",c1:"#8b93a3",c2:"#d5d9e1",ac:"#d63f3f",cs:[1,2],col:["#ffffff","#f4f2ec","#e6e3da"],sh:2,per:28,st:3,m:4,p:100},
+{id:"jamur",n:"Jamur kancing",b:"JAMURKU",ic:"🍄",kind:"c",disc:1,c1:"#3f444d",c2:"#8e95a3",ac:"#ffd166",cs:[20,20],col:["#c9a46a","#d9b983","#b98f55"],sh:6,per:8,st:9,m:.31,p:50,lc:"#d8cfae"},
+{id:"buah",n:"Potongan buah",b:"BUAHKU",ic:"🍑",kind:"c",disc:1,c1:"#e8730c",c2:"#ffb25b",ac:"#ffffff",cs:[40,40],col:["#ffb347","#ff9a3c","#ffc766"],sh:7,per:8,st:9,m:.15,p:37.5,lc:"#f7c66b"},
+{id:"sarden",n:"Ikan sarden",b:"SARDENKU",ic:"🐟",kind:"c",disc:1,c1:"#b9352a",c2:"#ef6a5b",ac:"#ffffff",cs:[60,60],col:["#aab4c0","#9aa6b3","#bcc6d0"],sh:8,per:5,st:10,m:.1,p:66.7,lc:"#d9553f"},
+{id:"kecap",n:"Kecap manis",b:"KECAPKU",ic:"🍶",kind:"b",c1:"#1f5a33",c2:"#3f8a55",ac:"#ffffff",cs:[2,2],col:["#2a1408"],sh:9,per:1,st:1,m:3,p:100,d:[1.1,1.2],dp:1,dl:76,sv:1,dmg:3000},
+{id:"minyak",n:"Minyak sawit",b:"MINYAKKU",ic:"🛢️",kind:"b",c1:"#d9a912",c2:"#ffe26a",ac:"#5a3a00",cs:[2,2],col:["#f2c230"],sh:9,per:1,st:1,m:3,p:250,d:[.8,.9],dp:2,dl:86,sv:2,dmg:5000},
+{id:"air",n:"Air mineral",b:"AIRKU",ic:"💧",kind:"b",c1:"#8ccfee",c2:"#eaf7ff",ac:"#0a4a8a",cs:[2,2],col:["#9fd8f5"],sh:9,per:1,st:1,m:3,p:50,d:[.9,1.1],dp:3,dl:96,sv:3,dmg:10000}];
+const LQ={cs:[2,2],m:3,sh:9};
+const UNL=[[1,"permen","jumlah"],[6,"wafer","jumlah"],[11,"ubi","berat"],[16,"coklat","jumlah"],[21,"kacang","berat"],[26,"tepung","berat"],[31,"permen","berat"],[36,"wafer","berat"],[41,"coklat","berat"],[46,"jamur","tuntas"],[51,"buah","tuntas"],[56,"sarden","tuntas"],[71,"kecap","volume"],[81,"minyak","volume"],[91,"air","volume"]];
+const K=(a,b)=>a+"|"+b;
+const EVT={61:["Kemasan bocor!","💧","Mulai level ini kemasan atau kaleng bisa bocor. Kaleng buah ini sudah bocor: ganti kemasan dulu sebelum mengisi. Bocoran padat mengotori timbangan (Rp 500), cairan Rp 1.000.","buah|tuntas"],66:["Isi berlebih tumpah!","🌊","Mulai level ini kemasan punya batas isi: lebih dari 10% berat bersih label, produk atau cairan tumpah. Padat Rp 500, cairan Rp 1.000. Ukuran kemasan mengikuti kuantitas.","sarden|tuntas"],76:["Awas, kecap!","⚠️","Bocoran atau tumpahan kecap merusak ringan timbangan: perbaikan Rp 3.000.","kecap|volume"],86:["Awas, minyak!","🔥","Bocoran atau tumpahan minyak merusak berat timbangan: perbaikan Rp 5.000.","minyak|volume"],96:["Awas, air!","⚡","Bocoran atau tumpahan air merusak fatal: timbangan harus diganti Rp 10.000.","air|volume"]};
+const INFO={jumlah:"Takarlah produk sesuai jumlah isi yang tercantum dalam kemasan.",berat:"Timbanglah produk sesuai berat bersih yang tercantum dalam kemasan. Gunakan Tare di awal untuk memudahkan.",tuntas:"Timbang produk sesuai bobot tuntas terlebih dahulu, tekan Enter untuk beralih ke cairan pengisi, lalu tambahkan cairan hingga berat bersih yang tercantum. Gunakan Tare di awal untuk memudahkan.",volume:"Gunakan massa jenis untuk memperkirakan berat. Jika nilainya kurang dari 1, berat lebih sedikit dari volume; jika lebih dari 1, berat lebih banyak dari volume. Timbang sesuai perkiraan konversi. Gunakan Tare di awal untuk memudahkan."};
+const TG={"jamur|tuntas":.17,"buah|tuntas":.17,"sarden|tuntas":.16};
+const WEV=[[1,{"permen|jumlah":1}],[6,{"wafer|jumlah":.5}],[11,{"ubi|berat":.5}],[16,{"coklat|jumlah":.5}],[21,{"kacang|berat":.5}],[26,{"tepung|berat":.5}],[31,{"permen|berat":.25,"permen|jumlah":.25}],[36,{"wafer|berat":.25,"wafer|jumlah":.25}],[41,{"coklat|berat":.25,"coklat|jumlah":.25}],[46,{"jamur|tuntas":.5}],[51,{"buah|tuntas":.5}],[56,{"sarden|tuntas":.5}],[61,TG],[66,TG],[71,{"kecap|volume":.5}],[76,{"kecap|volume":.5}],[81,{"minyak|volume":.5}],[86,{"minyak|volume":.35,"kecap|volume":.15}],[91,{"air|volume":.5}],[96,{"air|volume":.3,"minyak|volume":.12,"kecap|volume":.08}]];
+const WS=(()=>{const W={};return WEV.map(([lv,add],i)=>{if(i)for(const k in W)W[k]*=.5;for(const k in add)W[k]=(W[k]||0)+add[k];return[lv,Object.assign({},W)]})})();
+function pickEntry(lv){const u=UNL.find(x=>x[0]===lv);let k=u?K(u[1],u[2]):EVT[lv]?EVT[lv][3]:null;
+ if(!k){let w=WS[0][1];WS.forEach(x=>{if(x[0]<lv)w=x[1]});let t=0;for(const q in w)t+=w[q];let r=R()*t;k=Object.keys(w)[0];for(const q in w){r-=w[q];if(r<=0){k=q;break}}}
+ return k.split("|")}
+const MT={jumlah:"Takar JUMLAH ISI (hitung butir)",berat:"Timbang BERAT BERSIH",tuntas:"Timbang BOBOT TUNTAS, lalu isi cairan sampai BERAT BERSIH",volume:"Timbang ISI BERSIH (mL) dengan massa jenis di corong"};
+const FACT=["Isi bersih tidak boleh kurang dari yang tertulis di label (UU 2/1981 Pasal 31).","Lambang satuan yang benar: g, kg, mL, L. Bukan gr, Kg, atau G (PP 10/1987).","1000 g ditulis 1 kg dan 1000 mL ditulis 1 L (Permendag 31/2011).","Tinggi huruf kuantitas: 2 mm (lebih dari 5 s/d 50 g), 3 mm (s/d 200 g), 4 mm (s/d 1000 g), 6 mm di atasnya.","Label BDKT memuat nama barang, kuantitas, serta nama dan alamat perusahaan.","Timbangan untuk menimbang isi harus bertanda tera sah.","Makanan yang tidak tahan lebih dari 7 hari dikecualikan dari aturan BDKT."];
+const TIER=[[1,"Karyawan Magang","🎒",20],[11,"Karyawan Kontrak","📄",24],[26,"Karyawan Tetap","🪪",28],[41,"Supervisor Produksi","🦺",32],[56,"Manager Produksi","🏆",36],[71,"Direktur Produksi","💎",40],[86,"CEO","👑",46]];const tierIdx=lv=>{let k=0;TIER.forEach((t,i)=>{if(lv>=t[0])k=i});return k};
+const overLimit=q=>Math.max(OVER_MIN,Math.round(q*OVER_PCT));
+function judge(n,q){const l=overLimit(q);if(n<q)return["kurang",0,l];const o=n-q;return o>l?["berlebih",o,l]:["menang",o,l]}
+const kq=qg=>.5+.5*(Math.min(100,Math.max(10,qg))-10)/90;const tpour=(g,pr)=>g/(MAXRATE*kq(g)*pr.m*((pr.cs[0]+pr.cs[1])/2/T))+.8;function timeLimit(tp,lv){return .9*Math.max((6+2.2*tp)*(1-.005*lv),1.3*tp+2.5)}
+const rate=h=>Math.min(MAXRATE,3+14*h),fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,".");
+let best=0,on=true,vb=true,fx=true;try{best=+localStorage.getItem("timbangIsiBest")||0}catch(e){}
+const s={mode:"menu",trust:100,help:[1,1,1],shield:false,leak:false,leaked:false,leakT:0,hintOn:false,timeUsed:false,dt:0,shift:false,perf:0,nosh:0,k:1,qa:false,opts:[],up:null,tout:false,bonus:0,perfect:false,tt:-1,shownTier:0,lvS:1,introLv:0,cw:150,wh:96,stE:6,extra:0,leakFx:null,forceLeak:false,qdeck:[],qEnd:0,qDur:6,liq:0,phase:1,net1:null,sealP:false,dirty:false,spill:null,fluid:false,disc:false,pm:1,noteT:0,noteTxt:"",m2:"berat",cnt:0,tg:0,qT:0,liqG:0,ml:0,rho:1,tpN:8,sl:"",score:0,level:0,kas:0,combo:0,hint:false,ptr:0,key:false,paused:false,daily:false,round:0,pr:P[0],qn:0,qg:0,pouch:0,landed:[],falling:[],tare:0,tl:1,left:1,held:0,acc:0,seal:false,res:null,pts:0,stars:0,ok:null,vis:0};
+const net=()=>s.landed.reduce((a,c)=>a+c.w,0)+s.liq,surfY=()=>{const b=winBox();return b[3]-3-(b[3]-b[1]-6)*Math.min(1,net()/(s.qn*1.15))},shown=()=>(s.pouch+net()-s.tare)/T,pouring=()=>s.ptr||s.key||s.shift;
+const pouchBox=()=>[CX-s.cw/2,PLAT-2-(118+s.wh),CX+s.cw/2,PLAT-2],winBox=()=>{const b=pouchBox();return[b[0]+12,b[1]+108,b[2]-12,b[3]-10]};
+const pileTop=()=>winBox()[3]-6-Math.floor(s.landed.length/s.pr.per)*s.stE;
+/* suara & getar */
+let ac,lastB=0;function snd(f,d,t,v){if(!on)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==="suspended")ac.resume();const o=ac.createOscillator(),k=ac.createGain();o.type=t||"sine";o.frequency.value=f;k.gain.value=v||.05;o.connect(k);k.connect(ac.destination);o.start();k.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+const vib=n=>{try{if(vb)navigator.vibrate&&navigator.vibrate(n)}catch(e){}};
+const seq=(a,t)=>a.forEach((f,i)=>setTimeout(()=>snd(f,.18,t||"triangle",.07),i*110));
+/* konfeti */
+let conf=[];function boom(n){if(!fx)return;for(let i=0;i<n;i++)conf.push({x:CX,y:200,vx:(R()-.5)*420,vy:-R()*380-80,c:["#ffcc2a","#34d6a6","#ff7391","#c78cf0","#6ec6ff"][i%5],l:1.6})}
+/* alur */
+function startGame(daily){s.daily=daily;s.trust=100;s.help=[1,1,1];s.score=0;s.level=0;s.kas=0;s.combo=0;s.round=0;s.perf=0;s.nosh=0;s.up=null;s.shownTier=0;s.tt=-1;s.introLv=0;
+ if(daily){const d=new Date(),sd=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();let a=sd;R=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}else R=Math.random;nextRound()}
+function nextRound(){if(s.daily&&s.round>=5)return showOver();s.round++;
+ setup();s.pouch=rnd(10,100);if(s.round>=4&&(s.round-4)%5===0)gate();else begin()}
+function setup(){const lv=s.daily?30:s.level+1,e=pickEntry(lv),pr=P.find(x=>x.id===e[0]);s.pr=pr;s.m2=e[1];s.forceLeak=!s.daily&&lv===61;const uw=pr.disc?pr.cs[0]/T:1;
+ if(s.m2==="jumlah"){const n=rnd(2,10);s.cnt=n;s.qg=n;s.qn=n*pr.cs[0]}
+ else if(s.m2==="berat"){s.qg=pr.disc?Math.round(rnd(Math.ceil(20/uw),Math.floor(100/uw))*uw):rnd(20,100);s.qn=s.qg*T}
+ else if(s.m2==="tuntas"){const tg=Math.round(rnd(Math.ceil(20/uw),Math.floor(100/uw))*uw),lq=Math.max(1,Math.round(tg*rnd(5,20)/100));s.tg=tg;s.qT=tg*T;s.liqG=lq;s.qg=tg+lq;s.qn=s.qg*T}
+ else{const ml=rnd(20,100),d=+(pr.d[0]+R()*(pr.d[1]-pr.d[0])).toFixed(pr.dp);s.ml=ml;s.rho=d;s.qg=ml;s.qn=Math.round(ml*d*T)}
+ s.tpN=s.m2==="tuntas"?tpour(s.qT/T,pr)+tpour(s.liqG,LQ)+1.5:tpour(s.qn/T,pr)}
+function fillReset(){s.landed=[];s.falling=[];s.liq=0;s.tare=0;s.phase=1;s.net1=null;s.sealP=false;s.seal=false;s.dirty=false;s.spill=null;s.fluid=s.m2==="volume";s.disc=!!s.pr.disc&&!s.fluid;s.pm=s.pr.m;s.k=kq(s.qn/T)}
+function begin(){const lv=s.level+1,u=UNL.find(x=>x[0]===lv),ev=EVT[lv];if(!s.daily&&s.introLv!==lv&&(u||ev)){s.introLv=lv;intro(lv,u,ev,startRound)}else startRound()}
+function startRound(){s.lvS=Math.min(100,s.level+1);fillReset();s.extra=0;s.leakFx=null;geom();s.tl=timeLimit(s.tpN,s.level+1);s.left=s.tl;s.held=0;s.acc=0;s.mode="play";s.paused=false;s.hintOn=false;s.shield=false;s.timeUsed=false;newPouch();if(s.forceLeak){s.leak=true;s.leaked=true}ov(false)}
+function geom(){const f=Math.min(1,s.qn/T/100);if(s.lvS>=66){s.cw=PW*(.82+.18*f);s.wh=52+44*f}else{s.cw=PW;s.wh=96}
+ const cap=s.qn+overLimit(s.qn),aw=s.pr.disc?s.pr.cs[0]:(s.pr.cs[0]+s.pr.cs[1])/2,rows=Math.max(1,Math.ceil(cap/aw/s.pr.per));s.stE=s.lvS>=66&&s.m2!=="volume"?Math.max(2,Math.min(s.pr.st*1.3,(s.wh-18)/rows)):s.pr.st}
+function intro(lv,u,ev,cb){const el=$("up");s.mode="rankup";ov(false);const k=ev&&ev[3]?ev[3]:K(u[1],u[2]),a=k.split("|"),pr=P.find(x=>x.id===a[0]);let ic,t1,t2;
+ if(ev){ic=ev[1];t1=ev[0];t2=ev[2]+" "+INFO[a[1]]}else{ic=pr.ic;t1="Produk baru: "+pr.n;t2=pr.b+" · "+MT[a[1]]+". "+INFO[a[1]]}
+ el.innerHTML=`<span class="n" style="font-size:56px;animation:newic 1.4s both">${ic}</span><p style="margin:6px 0 0"><b>LEVEL ${lv}</b><br><b>${t1}</b><br><span style="font-size:13px;line-height:1.35;display:block;margin-top:4px">${t2}</span></p><button id="ib2" style="margin-top:8px;width:100%;background:#6d3a9c;color:#fff;border:0;border-radius:10px;padding:9px;font-weight:700">Mulai (Enter)</button>`;
+ el.hidden=false;el.style.pointerEvents="auto";el.style.top="48%";el.style.width="92%";let done=false;const go=()=>{if(done)return;done=true;s.introGo=null;el.hidden=true;el.style.pointerEvents="none";el.style.top="34%";el.style.width="";if(s.mode==="rankup")cb()};s.introGo=go;$("ib2").onclick=go;seq([440,554,659,880]);boom(50);vib([30,30,60]);setTimeout(go,20000)}
+function newPouch(){const w=s.pouch/T,p=Math.max(.01,Math.min(.1,.1-(w-1)*.01));s.leak=s.lvS>=61&&R()<.05+.2*(s.lvS-61)/39;s.leaked=false;s.leakT=0}
+const QZ=[
+["Berikut ini yang BUKAN merupakan informasi minimum yang wajib dicantumkan pada kemasan BDKT berdasarkan Permendag tentang BDKT adalah ....",["Nama barang","Kuantitas barang","Nama dan alamat perusahaan","Nomor telepon layanan pengaduan konsumen"],3],
+["Informasi mengenai nama dan alamat perusahaan pada kemasan BDKT bertujuan untuk ....",["Menunjukkan harga jual barang","Menunjukkan identitas perusahaan yang bertanggung jawab atas barang","Menunjukkan jumlah barang yang diproduksi","Menunjukkan masa kedaluwarsa barang"],1],
+["Apabila produsen atau importir tidak melakukan pengemasan sendiri, informasi tambahan yang wajib dicantumkan adalah ....",["Nama dan alamat toko yang menjual produk","Nama dan alamat distributor","Nama dan alamat perusahaan yang melakukan pengemasan BDKT","Nama dan alamat konsumen penerima barang"],2],
+["Berikut ini merupakan ketentuan pencantuman label BDKT, KECUALI ....",["Menggunakan Bahasa Indonesia yang jelas dan mudah dimengerti","Tidak mudah lepas dari kemasan","Tidak mudah luntur atau rusak","Boleh dicantumkan menggunakan tulisan yang sulit dibaca selama informasinya benar"],3],
+["Sebuah produk memiliki informasi berikut pada kemasannya: nama barang Keripik Singkong; kuantitas berat bersih 100 g; nama perusahaan PT Maju Bersama. Berdasarkan ketentuan informasi minimum BDKT, kekurangan utama kemasan tersebut adalah ....",["Tidak mencantumkan merek dagang","Tidak mencantumkan alamat perusahaan","Tidak mencantumkan harga produk","Tidak mencantumkan tanggal produksi"],1],
+["Untuk produk makanan padat seperti tepung terigu, gula pasir, beras, dan keripik, keterangan kuantitas yang paling tepat digunakan adalah ....",["Isi bersih","Berat bersih","Bobot tuntas","Isi volume"],1],
+["Untuk produk cair seperti minyak goreng, kecap, dan sirup yang kuantitasnya dinyatakan berdasarkan volume, keterangan yang tepat adalah ....",["Berat bersih","Bobot tuntas","Isi bersih","Berat kosong"],2],
+["Sebuah produk sarden kaleng memiliki ikan padat yang berada dalam media cair berupa saus. Keterangan label yang tepat untuk menunjukkan kuantitas adalah ....",["Isi bersih saja","Berat bersih saja","Bobot tuntas atau berat tuntas selain keterangan berat bersih atau isi bersih","Bobot tuntas atau berat tuntas saja"],2],
+["Pada produk buah kaleng yang berisi potongan buah dan sirup, keterangan yang menunjukkan berat buah setelah dipisahkan dari cairannya adalah ....",["Berat bersih","Berat tuntas atau bobot tuntas","Berat kotor","Berat kemasan"],1],
+["Pada produk sarden kaleng yang memiliki berat bersih 425 g dan berat tuntas 350 g, arti angka 350 g adalah ....",["Berat ikan beserta saus dan kemasannya","Berat ikan beserta sausnya","Berat ikan tanpa saus","Berat kaleng kosong"],2],
+["Berikut ini pernyataan yang PALING TEPAT mengenai pencantuman berat tuntas pada produk padat dalam media cair adalah ....",["Berat tuntas menggantikan seluruh keterangan berat bersih","Berat tuntas dicantumkan sebagai tambahan selain keterangan berat bersih atau isi bersih","Berat tuntas hanya digunakan untuk produk berbentuk bubuk","Berat tuntas hanya digunakan untuk produk gas cair"],1],
+["Sebuah perusahaan memproduksi produk kental berupa sirup dalam botol dengan massa jenis 1 g/mL. Penulisan keterangan kuantitas yang paling tepat adalah ....",["Berat bersih 500 g","Isi bersih 500 mL","Berat bersih 500 g atau isi bersih 500 mL","Semua benar"],3],
+["Berikut ini pasangan produk dan keterangan kuantitas yang BENAR, KECUALI ....",["Beras : Berat bersih","Air mineral : Isi bersih","Sarden kaleng : Berat bersih dan berat tuntas atau bobot tuntas","Minyak goreng : Volume bersih"],3],
+["Sebuah produk gas cair seperti LPG dalam tabung harus memiliki keterangan nominal kuantitas. Selain kuantitas berat bersih gas, keterangan tambahan yang sesuai Permendag tentang BDKT adalah ....",["Berat kotor","Berat tabung kosong","Isi bersih","Kandungan gas"],1],
+["Produk mi instan memiliki kuantitas nominal 85 g. Keterangan yang paling tepat untuk menunjukkan kuantitas tersebut adalah ....",["Isi bersih 85 g","Berat bersih 85 g","Berat bersih 85","Volume bersih 85 g"],1],
+["Manakah penulisan lambang satuan untuk produk dengan nominal kuantitas 250 gram yang BENAR?",["250 G","250 Gr","250 gr","250 g"],3],
+["Manakah penulisan lambang satuan untuk produk cair dengan kuantitas 600 mililiter yang BENAR?",["600 ML","600 mL","600 Ml","600 mliter"],1],
+["Berdasarkan Permendag tentang BDKT, produk dengan nominal kuantitas 1.500 mL seharusnya ditulis ....",["1,5 Lt","1.500 mL","1,5 L","1,5 mL"],2],
+["Produk dengan kuantitas nominal 500 miligram memiliki berat kurang dari 1 gram. Penulisan nominal kuantitas dan lambang satuan yang sesuai adalah ....",["500 mg","0,5 g","0,5 kg","0,5 Gr"],0],
+["Produk cair dengan kuantitas nominal tepat 1.000 mL, berdasarkan ketentuan penulisan lambang satuan yang disederhanakan, dapat menggunakan satuan ....",["tetap mL","L atau l","g atau kg","mg atau g"],1],
+["Berikut ini penulisan lambang satuan yang SALAH, KECUALI ....",["250 Gr","500 ML","1.000 G","250 g"],3],
+["Manakah penulisan yang paling sesuai untuk keterangan kuantitas berdasarkan produknya dengan ketentuan Permendag tentang BDKT?",["Berat bersih : Minyak","Volume bersih : Air Mineral","Berat bersih : Kecap","Isi bersih : Gula"],2],
+["Berdasarkan Permendag tentang BDKT, tinggi minimum angka dan huruf untuk BDKT dengan kuantitas nominal lebih dari 5 sampai dengan 50 g atau mL adalah ....",["1 mm","2 mm","3 mm","4 mm"],1],
+["Sebuah produk tepung memiliki kuantitas nominal 100 g. Berapakah tinggi minimum angka dan huruf kuantitas nominal yang harus dicantumkan?",["2 mm","3 mm","4 mm","6 mm"],1],
+["Produk minyak goreng memiliki kuantitas nominal 200 mL. Tinggi minimum angka dan huruf kuantitas nominalnya adalah ....",["2 mm","3 mm","4 mm","6 mm"],1],
+["Sebuah produk kertas memiliki kuantitas isi : 100 lembar. Tinggi minimum angka dan huruf yang harus digunakan adalah ....",["2 mm","3 mm","4 mm","6 mm"],0],
+["Produk cair memiliki kuantitas nominal 1.500 mL. Berapakah tinggi minimum angka dan huruf kuantitas nominalnya?",["2 mm","3 mm","4 mm","6 mm"],3],
+["Berikut ini pernyataan mengenai tinggi minimum angka dan huruf kuantitas nominal yang BENAR adalah ....",["40 g, tinggi minimum 3 mm","150 g, tinggi minimum 4 mm","750 g, tinggi minimum 4 mm","1.200 g, tinggi minimum 4 mm"],2],
+["Sebuah produk dengan kuantitas nominal 25 buah. Berdasarkan Permendag tentang BDKT, tinggi minimum angka dan huruf kuantitas nominal adalah ....",["1 mm","2 mm","3 mm","4 mm"],1],
+["Berikut ini pernyataan yang PALING TEPAT mengenai tinggi minimum angka dan huruf kuantitas nominal berdasarkan Permendag tentang BDKT adalah ....",["Tinggi minimum angka dan huruf selalu 2 mm untuk semua produk","Tinggi minimum angka dan huruf ditentukan berdasarkan kuantitas nominal dan jenis satuan ukuran yang digunakan","Tinggi minimum angka ditentukan berdasarkan ukuran fisik kemasan","Tinggi minimum huruf ditentukan berdasarkan harga jual produk"],1]];
+function gate(){s.mode="label";if(!s.qdeck.length)s.qdeck=QZ.map((_,i)=>i).sort(()=>R()-.5);const it=QZ[s.qdeck.pop()],ops=it[1].map((t,i)=>({t,c:i===it[2]}));for(let i=3;i>0;i--){const j=rnd(0,i);[ops[i],ops[j]]=[ops[j],ops[i]]}
+ const len=it[0].length+ops.reduce((a,o)=>a+o.t.length,0);s.qDur=Math.min(8,Math.max(4,3+len/45));s.qEnd=performance.now()/1000+s.qDur;
+ s.opts=ops;s.qa=true;ov(true,"Kuis Pelabelan",`<div class="qb"><i id="qbi"></i></div><p class="qq">${it[0]}</p>`+ops.map((o,i)=>`<button class="op" data-i="${i}">${i+1}. ${o.t}</button>`).join(""),"");$("ob").hidden=true;$("ob2").hidden=true}
+function answer(i){if(s.mode!=="label"||!s.qa)return;if(i>=0&&!s.opts[i])return;s.qa=false;
+ if(i>=0&&s.opts[i].c){snd(880,.15);vib(15);boom(50);const k=rnd(0,2);s.help[k]++;ov(true,"Benar!",`<div class="roul" id="rl">🎯</div><p id="rp">Mengundi hadiah bantuan...</p>`,"Lanjut","var(--good)");$("ob").hidden=true;$("ot").className="pop";
+  const ic=["🎯","⏳","🛡️"],nm=["Target takaran","Waktu 2 kali lebih lama","Perisai kepercayaan"];let n=0;const iv=setInterval(()=>{$("rl").textContent=ic[n++%3];snd(500+n*40,.04,"square",.02)},90);
+  setTimeout(()=>{clearInterval(iv);$("rl").textContent=ic[k];$("rl").className="roul win";$("rp").innerHTML=`Hadiah: <b>${nm[k]}</b> +1`;$("ob").hidden=false;seq([660,880,1100]);boom(40)},1400)}
+ else{snd(140,.4,"sawtooth",.06);vib([60,40,60]);ov(true,i<0?"Waktu habis!":"Kurang tepat",`<p>${i<0?"Tidak ada bonus bantuan. ":""}Jawaban yang benar: <b>${s.opts.find(o=>o.c).t}</b></p>`,"Lanjut","var(--bad)");$("ot").className="shk"}}
+function spawn(){const p=s.fluid?LQ:s.pr;s.falling.push({x:CX+R()*28-14,y:118,w:rnd(p.cs[0],p.cs[1]),c:s.fluid?"":p.col[rnd(0,p.col.length-1)],fl:s.fluid,jx:R()*6-3,jy:R()*3-1.5,r:(R()-.5)*([0,1,2,3].includes(p.sh)?6.28:1.1)})}
+function pourStart(m){if(s.mode==="play"&&!s.paused&&!s.seal){s.held=0;s.acc=0;spawn()}}
+const take=()=>{if(s.mode==="play"&&!s.paused){if(s.fluid)s.liq=Math.max(0,s.liq-10);else if(s.landed.length)s.landed.pop()}};
+const tare=()=>{if(s.mode==="play"&&!s.paused)s.tare=s.tare?0:s.pouch+net()};
+const seal=()=>{if(s.mode==="play"&&!s.paused){if(s.m2==="tuntas"&&s.phase===1)s.sealP=true;else s.seal=true}};function toPhase2(){s.sealP=false;s.net1=net();s.phase=2;s.fluid=true;s.pm=LQ.m;s.k=kq(s.liqG);s.disc=false;s.held=0;s.acc=0;snd(660,.12);vib(20);note("Isi cairan sampai berat bersih "+s.qg+" g")}
+function note(t){s.noteT=2.6;s.noteTxt=t}
+function togglePause(){if(s.mode!=="play")return;s.paused=!s.paused;if(s.paused){s.ptr=0;s.key=false;s.shift=false;$("pour").classList.remove("on");$("pour2").classList.remove("on")}}
+function finish(why){let n=net(),q=s.qn;if(s.m2==="tuntas"&&s.phase===2&&s.net1<s.qT){n=s.net1;q=s.qT}let[r,o,l]=judge(n,q);s.tout=why==="waktu";const p=s.pr.p,gp=q/T*.1,pct=100*o/q;
+ s.res={r,n,o,l};s.pts=0;s.bonus=0;s.stars=0;s.perfect=false;s.up=null;let gain=0,d=0;
+ if(r==="kurang"){d=s.shield?0:-Math.min(20,200*(q-n)/q);gain=Math.round(gp*p);s.combo=0;s.perf=0;s.nosh=0;snd(110,.6,"sawtooth",.08);vib([120,50,120])}
+ else{d=Math.min(10,pct);gain=Math.round((gp-o/T)*p);s.nosh++;
+  if(r==="menang"){s.pts=Math.max(0,Math.round(100-10*pct));if(s.pts===100){s.perf++;s.perfect=true}else s.perf=0;
+   if(s.perf>3)s.bonus+=50*(s.perf-3);if(s.nosh%10===0)s.bonus+=300;s.score+=s.pts+s.bonus;s.combo++;s.stars=s.pts>=100?3:s.pts>=60?2:s.pts>0?1:0;
+   const a=tierIdx(s.level+1);s.level++;const b=tierIdx(Math.min(100,s.level+1));s.up=b>a?[a,b]:null;
+   if(s.perfect){seq([523,659,784,1047,1319]);boom(90);vib([30,30,30,30,80])}else{seq([523,659,784]);boom(s.stars*15)}vib([30,30,60])}
+  else{s.combo=0;s.perf=0;snd(200,.4,"sawtooth",.06)}}
+ s.trust=Math.max(0,Math.min(120,s.trust+d));s.dt=d;gain-=s.extra;if(why==="tumpah"){gain-=s.spill.cost;snd(90,.8,"sawtooth",.09);vib([200,60,200])}s.kas+=gain;s.gain=gain;if(s.score>best){best=s.score;try{localStorage.setItem("timbangIsiBest",best)}catch(e){}}
+ s.mode="result";s.ptr=0;s.key=false;s.shift=false;$("pour").classList.remove("on");$("pour2").classList.remove("on");showResult()}
+function useHelp(i){if(s.mode!=="play"||s.paused||s.help[i]<1)return;
+ if(i===0){if(s.hintOn)return;s.hintOn=true}if(i===1){if(s.timeUsed)return;s.timeUsed=true;s.left+=s.tl;s.tl*=2}if(i===2){if(s.shield)return;s.shield=true}
+ s.help[i]--;snd(700,.1,"triangle");vib(15)}
+function buy(i){if(s.kas>=5000){s.kas-=5000;s.help[i]++;snd(520,.1);vib(15)}else{snd(120,.2,"square");vib(40)}}
+function swap(){if(s.mode!=="play"||s.paused)return;const c=Math.round(s.pouch/T*200);if(s.kas<c){snd(120,.2,"square");vib(40);return}s.kas-=c;fillReset();s.left=s.tl;newPouch();snd(600,.1,"triangle");vib(20)}
+function reset(){if(s.mode!=="menu")startGame(s.daily)}
+function update(dt){s.left-=dt;const m=s.pm;
+ if(pouring()&&!s.seal&&!s.sealP){s.held+=dt;const sl=s.ptr===2||(s.shift&&!s.key&&s.ptr!==1);s.acc+=(sl?(s.disc?2:3.5*s.k*m):rate(s.held)*s.k*m)*dt;while(s.acc>=1){s.acc-=1;spawn()}}
+ if(s.leak&&(s.landed.length||s.liq>0)){s.leakT+=dt;if(s.leakT>.7){s.leakT=0;if(s.liq>0)s.liq=Math.max(0,s.liq-3);else s.landed.pop();s.leaked=true;if(!s.dirty){s.dirty=true;leakCost()}snd(180,.08,"triangle",.03)}}
+ let top=pileTop();const keep=[];let landed=0;
+ for(const f of s.falling){f.y+=FALL*dt;if(f.y>=(f.fl?surfY():top)){if(f.fl)s.liq+=f.w;else{s.landed.push({w:f.w,c:f.c,jx:f.jx,jy:f.jy,r:f.r});top=pileTop()}landed++}else keep.push(f)}
+ s.falling=keep;if(landed&&performance.now()-lastB>45){lastB=performance.now();snd(300+s.pr.sh*60+R()*80,.05,"square",.02)}
+ if(s.mode==="play"&&net()>s.qn+overLimit(s.qn)&&(s.fluid||s.lvS>=66))return doSpill();
+ if(s.sealP&&!s.falling.length)toPhase2();
+ if(s.seal&&!s.falling.length)finish("seal");else if(s.left<=0){s.falling=[];finish("waktu")}}
+function leakCost(){const p=s.pr;let c=500,sev=0;const liq=s.fluid;if(liq){c=1000;if(s.m2==="volume"&&s.lvS>=p.dl){c=p.dmg;sev=p.sv}}s.extra+=c;s.leakFx={t0:performance.now()/1000,cost:c,sev,liq,col:liq?(s.m2==="volume"?p.col[0]:p.lc):p.col[0]};note((sev?"Timbangan rusak oleh bocoran":"Timbangan kotor oleh bocoran")+": - Rp "+fmt(c));snd(120,.3,"sawtooth",.05);vib([80,40,80])}
+function doSpill(){const liq=s.fluid;let cost=500,sev=0;if(liq){cost=1000;if(s.m2==="volume"&&s.lvS>=s.pr.dl){cost=s.pr.dmg;sev=s.pr.sv}}
+ s.spill={t0:performance.now()/1000,cost,sev,liq,col:liq?(s.m2==="volume"?s.pr.col[0]:s.pr.lc):s.pr.col[0]};s.falling=[];finish("tumpah")}
+/* teks */
+function ov(show,t,h,b1,c,b2){$("ov").hidden=!show;if(!show)return;$("ob").hidden=false;$("ot").className="";const col=c||"var(--accent)";$("ot").textContent=t;$("ot").style.color=col;$("ox").innerHTML=h;$("ob").textContent=b1;$("ov").firstElementChild.style.borderColor=col;
+ $("ob2").hidden=!b2;if(b2)$("ob2").textContent=b2;$("ob").focus({preventScroll:true})}
+function showMenu(){s.mode="menu";ov(true,"Game Timbang Berat BDKT","<p>Tuang produk ke kemasan sampai berat bersih sama dengan label. Tiga produk, tiga rasa tuang.</p><p>Kurang, berlebih jauh, atau kehabisan waktu berarti kalah. Rangkai kombo, kumpulkan bintang, dan naik pangkat.</p>","Mulai game",null,"Tantangan harian (5 ronde)")}
+function showResult(){const r=s.res,n=r.n/T,Rp=x=>(x<0?"- ":"+ ")+"Rp "+fmt(Math.abs(x));let t,c,h;const tgT=s.m2==="tuntas"&&s.phase===2&&s.net1<s.qT?s.qT:s.qn,ln=s.m2==="jumlah"?`Isi ${Math.round(r.n/s.pr.cs[0])}, label ${s.cnt}`:`Isi ${n.toFixed(1)} g, target ${(tgT/T).toFixed(1)} g`;
+ if(r.r==="menang"){t=s.perfect?"SEMPURNA! 100":"Pas!";c="var(--good)";h=`<div class="st">${"★".repeat(s.stars)}${"☆".repeat(3-s.stars)}</div><p>${ln} (lebih ${(r.o/T).toFixed(1)} g)</p><p class="sc"><b>+${s.pts} poin</b>${s.bonus?" · bonus +"+s.bonus:""}</p>`}
+ else if(r.r==="kurang"){t="Kurang!";c="var(--bad)";h=`<p>${ln}: kurang ${((tgT-r.n)/T).toFixed(1)} g. Tanpa skor.</p>`+(s.shield?"<p>Perisai menahan penurunan kepercayaan.</p>":"")}
+ else{t="Berlebih!";c="var(--warn)";h=`<p>${ln}: lebih ${(r.o/T).toFixed(1)} g. Tanpa skor.</p>`}
+ if(s.spill){const sp=s.spill;t=sp.sev===3?"TIMBANGAN RUSAK FATAL!":sp.sev?"TIMBANGAN RUSAK!":"TUMPAH!";c="var(--bad)";h+=`<p><b>${sp.sev===3?"Timbangan harus diganti":sp.sev?"Timbangan perlu diperbaiki":"Timbangan perlu dibersihkan"}: - Rp ${fmt(sp.cost)}</b></p>`}
+ if(s.tout&&!s.spill){t="Waktu habis!";h="<p>Waktu habis, ditimbang apa adanya.</p>"+h}
+ if(s.m2==="volume")h+=`<p>Massa jenis ${String(s.rho).replace(".",",")} g/mL, label ${s.ml} mL</p>`;
+ if(s.extra)h+=`<p>Biaya bocoran (sudah termasuk): - Rp ${fmt(s.extra)}</p>`;h+=`<p>Untung ${Rp(s.gain)} · Kepercayaan ${s.dt>=0?"+":""}${Math.round(s.dt)}%</p>`;if(r.r==="kurang")h+=`<p><i>${FACT[rnd(0,FACT.length-1)]}</i></p>`;
+ ov(true,t,h,s.daily&&s.round>=5||s.trust<=0||s.level>=100?"Lihat skor akhir":"Lanjut",c);$("ot").className=s.perfect?"perf":"pop"}
+function win(){s.mode="over";ov(true,"SELAMAT! ANDA JUARA!",`<div class="trophy">🏆</div><p class="sc">Skor <b>${s.score}</b> · <b>${rank()}</b></p><p>Anda menamatkan 100 level dan menjaga kepercayaan pelanggan. Produksi yang jujur dan tepat!</p><p>Kas Rp ${fmt(s.kas)}</p>`,"Main lagi","#ffcc2a","Bagikan hasil");$("ot").className="win";let n=0;const iv=setInterval(()=>{if(s.mode!=="over"||++n>24){clearInterval(iv);return}boom(70);seq([784,988,1175,1568]);vib([40,40,40])},650)}
+function showOver(){if(s.level>=100&&s.trust>0)return win();s.mode="over";const bag=s.level>=100?"Anda CEO! Level 100 selesai":s.daily?"Tantangan harian selesai":"Game over",rk=rank();
+ ov(true,bag,`<p>Skor <b>${s.score}</b> (terbaik ${best}) · Pangkat <b>${rk}</b></p><p>Timbangan berhasil: ${s.level} · Kas Rp ${fmt(s.kas)}</p>`,"Main lagi",s.daily?"var(--good)":"var(--bad)","Bagikan hasil")}
+function share(){const d=new Date().toLocaleDateString("id-ID"),tx=`Game Timbang Berat BDKT${s.daily?" (tantangan "+d+")":""}: skor ${s.score}, pangkat ${rank()}, ${s.level} timbangan berhasil. Bisa kalahkan saya? `;
+ try{if(navigator.share){navigator.share({text:tx,url:location.href});return}}catch(e){}window.open("https://wa.me/?text="+encodeURIComponent(tx+location.href),"_blank")}
+const rank=()=>TIER[tierIdx(Math.min(100,s.level+1))][1];
+function rankUp(a,b,cb){const el=$("up");s.mode="rankup";ov(false);el.innerHTML=`<span class="o">${TIER[a][2]}</span><span class="n" style="font-size:${TIER[b][3]*2.3}px">${TIER[b][2]}</span><p style="margin:6px 0 0">Naik pangkat!<br><b>${TIER[b][1]}</b></p>`;el.hidden=false;seq([392,523,659,784,1047]);boom(70);vib([40,40,40,40,120]);
+ setTimeout(()=>{if(s.mode==="rankup")s.shownTier=b},1100);setTimeout(()=>{el.hidden=true;if(s.mode==="rankup")cb()},3000)}
+function adv(){if(s.mode==="menu"||s.mode==="over")startGame(false);else if(s.mode==="result"){if(s.daily&&s.round>=5||s.trust<=0||s.level>=100)showOver();else{if(s.up){const u=s.up;s.up=null;rankUp(u[0],u[1],nextRound)}else nextRound()}}else if(s.mode==="label"){if(!s.qa&&!$("ob").hidden)begin()}}
+function alt(){if(s.mode==="menu")startGame(true);else if(s.mode==="over")share()}
+const tgt=()=>{const n=s.pr.n,b=x=>`<b class="big">${x}</b>`;if(s.m2==="jumlah")return `Target takar jumlah isi: ${b(s.cnt)} · ${n}`;if(s.m2==="berat")return `Target berat bersih: ${b(s.qg+" g")} · ${n}`;if(s.m2==="tuntas")return s.phase===1?`Bobot tuntas: ${b(s.tg+" g")} · ${n}`:`Berat bersih: ${b(s.qg+" g")} · cairan`;return `Isi bersih: ${b(s.qg+" mL")} · ${n}`};
+function hud(){if(s.mode==="label"&&s.qa){const l=s.qEnd-performance.now()/1000,b=$("qbi");if(b)b.style.width=Math.max(0,l/s.qDur*100)+"%";if(l<=0)answer(-1)}$("lv").textContent=s.lvS;$("sc").textContent=s.score;$("bs").textContent=best;$("tr").textContent=Math.round(s.trust)+"%";const t2=$("trb");t2.style.width=s.trust/120*100+"%";t2.style.background=s.trust<5?"#e5484d":s.trust<20?"#ff8c1a":"#3b82f6";[0,1,2].forEach(i=>{$("c"+(i+1)).textContent=s.help[i];$("h"+(i+1)).classList.toggle("z",s.help[i]<1)});
+ $("ks").textContent="Rp "+fmt(s.kas);$("cb").textContent=s.perf;const tt=s.shownTier;if(s.tt!==tt){s.tt=tt;$("rk").innerHTML=`<span style="font-size:${TIER[tt][3]}px;line-height:1;vertical-align:middle">${TIER[tt][2]}</span> ${TIER[tt][1]}`}
+ const f=s.mode==="play"||s.mode==="result"?Math.max(0,s.left/s.tl):1,tb=$("tb");tb.style.width=f*100+"%";tb.style.background=f>.5?"var(--good)":f>.25?"var(--warn)":"var(--bad)";
+ const ing=s.mode==="play"||s.mode==="result";$("tg").innerHTML=ing?tgt():"&nbsp;";const sl=s.mode==="play"&&s.m2==="tuntas"&&s.phase===1?"Isi Cairan":"Segel";if(s.sl!==sl){s.sl=sl;$("seal").innerHTML=sl+"<small>Enter</small>"}
+ $("hn").textContent="";
+ const pz=$("pause"),lab=s.paused?"▶ Lanjut · Esc":"❚❚ Jeda · Esc";if(pz.textContent!==lab)pz.textContent=lab;pz.disabled=s.mode!=="play"}
+/* gambar */
+function lg(x0,y0,x1,y1,st){const q=g.createLinearGradient(x0,y0,x1,y1);st.forEach((c,i)=>q.addColorStop(i/(st.length-1),c));return q}
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function bit(x,y,w,c,sh,r){g.save();g.translate(x,y);g.rotate(r||0);g.fillStyle=c;g.strokeStyle="rgba(0,0,0,.45)";g.lineWidth=1;
+ if(sh===0){const q=3+w*.35;g.beginPath();g.ellipse(0,0,q+2.5,q,0,0,7);g.fill();g.stroke();g.strokeStyle="rgba(255,255,255,.4)";g.beginPath();g.moveTo(-q,0);g.quadraticCurveTo(0,-q*.6,q,0);g.stroke()}
+ else if(sh===1){const q=2.6+w*.5;g.beginPath();g.ellipse(0,0,q+1.5,q,.3,0,7);g.fill();g.stroke();g.fillStyle="rgba(255,255,255,.35)";g.beginPath();g.ellipse(-1,-q*.4,q*.5,q*.25,0,0,7);g.fill()}
+ else if(sh===2){g.beginPath();g.arc(0,0,1.8+w*.4,0,7);g.fill()}
+ else if(sh===3){g.beginPath();g.arc(0,0,5,0,7);g.fill();g.stroke();g.beginPath();g.moveTo(5,0);g.lineTo(10,-3);g.lineTo(10,3);g.moveTo(-5,0);g.lineTo(-10,-3);g.lineTo(-10,3);g.fill();g.fillStyle="rgba(255,255,255,.6)";g.beginPath();g.arc(-1.5,-1.5,1.6,0,7);g.fill()}
+ else if(sh===4){g.fillRect(-9,-5,18,10);g.strokeRect(-9,-5,18,10);g.strokeStyle="rgba(160,120,60,.6)";for(let i=-6;i<=6;i+=4){g.beginPath();g.moveTo(i,-5);g.lineTo(i,5);g.stroke()}g.beginPath();g.moveTo(-9,0);g.lineTo(9,0);g.stroke()}
+ else if(sh===5){g.fillRect(-10,-6,20,12);g.strokeRect(-10,-6,20,12);g.strokeStyle="rgba(0,0,0,.35)";for(let i=-5;i<=5;i+=5){g.beginPath();g.moveTo(i,-6);g.lineTo(i,6);g.stroke()}g.fillStyle="rgba(255,255,255,.25)";g.fillRect(-10,-6,20,3)}
+ else if(sh===6){g.beginPath();g.arc(0,0,8,Math.PI,0);g.fill();g.stroke();g.fillStyle="#efe3c8";g.fillRect(-3,0,6,7);g.strokeRect(-3,0,6,7)}
+ else if(sh===7){g.beginPath();g.moveTo(-8,3);g.quadraticCurveTo(0,-14,8,3);g.quadraticCurveTo(0,7,-8,3);g.fill();g.stroke();g.strokeStyle="rgba(255,255,255,.5)";g.beginPath();g.moveTo(-4,2);g.quadraticCurveTo(0,-7,4,2);g.stroke()}
+ else if(sh===8){g.beginPath();g.ellipse(0,0,11,4.5,0,0,7);g.fill();g.stroke();g.beginPath();g.moveTo(10,0);g.lineTo(16,-5);g.lineTo(16,5);g.fill();g.fillStyle="#fff";g.beginPath();g.arc(-6,-1,1.4,0,7);g.fill()}
+ else{g.beginPath();g.arc(0,0,2.6,0,7);g.fill()}
+ g.restore()}
+function ubi(x,y,k){g.save();g.translate(x,y);g.rotate(-.12);g.scale(k,k);g.fillStyle=lg(-20,-24,20,24,["#b57edc","#7b3fa8"]);g.strokeStyle="#4a1f6b";g.lineWidth=2;g.beginPath();g.ellipse(0,0,17,24,0,0,7);g.fill();g.stroke();
+ g.fillStyle="#fff";g.beginPath();g.arc(-6,-6,4,0,7);g.arc(6,-6,4,0,7);g.fill();g.fillStyle="#1a1030";g.beginPath();g.arc(-5,-5,2,0,7);g.arc(7,-5,2,0,7);g.fill();
+ g.strokeStyle="#4a1f6b";g.lineWidth=2;g.beginPath();g.arc(0,2,7,.15,Math.PI-.15);g.stroke();g.fillStyle="rgba(255,120,160,.6)";g.beginPath();g.arc(-11,3,3,0,7);g.arc(11,3,3,0,7);g.fill();
+ g.fillStyle="#3aa86b";g.beginPath();g.ellipse(2,-25,3,7,.5,0,7);g.fill();g.restore()}
+function draw(){const now=performance.now()/1000,tick=s.mode==="play"&&s.left<3&&!s.paused&&fx;
+ g.save();g.clearRect(0,0,W,H);if(tick||(fx&&(s.spill||s.leakFx)&&performance.now()/1000-(s.spill||s.leakFx).t0<1.2))g.translate(R()*4-2,R()*4-2);
+ g.fillStyle=lg(0,0,0,H,["#2a1b4d","#1b2a52","#14203d"]);g.fillRect(-5,-5,W+10,H+10);
+ [40,170,300].forEach(x=>{g.fillStyle="rgba(255,255,255,.05)";g.fillRect(x,30,70,120)});
+ /* hopper */
+ g.fillStyle=lg(CX-110,0,CX+110,0,["#6c7a93","#eef2fa","#6c7a93"]);g.strokeStyle="#cdd5e4";g.lineWidth=2;g.beginPath();g.moveTo(CX-112,16);g.lineTo(CX+112,16);g.lineTo(CX+20,104);g.lineTo(CX-20,104);g.closePath();g.fill();g.stroke();
+ for(let i=0;i<14;i++){g.fillStyle=i%2?"#111":"#ffcc2a";g.fillRect(CX-112+i*16,12,16,8)}
+ g.fillStyle="#4a5670";g.fillRect(CX-20,102,40,14);rr(CX-62,34,124,24,8);g.fillStyle="#1b2a52";g.fill();g.fillStyle="#fff";g.font="bold 13px sans-serif";g.textAlign="center";g.fillText(s.pr.n,CX,51);
+ if(s.pr.kind==="b"){g.fillStyle=s.pr.col[0];g.beginPath();g.moveTo(CX-70,68);g.lineTo(CX+70,68);g.lineTo(CX+22,102);g.lineTo(CX-22,102);g.fill();const rt=s.mode==="menu"?"":"ρ = "+String(s.rho).replace(".",",")+" g/mL";g.font="bold 15px sans-serif";g.textAlign="center";g.strokeStyle="#000";g.lineWidth=3;g.strokeText(rt,CX,90);g.fillStyle="#fff";g.fillText(rt,CX,90)}
+ else for(let i=0;i<9;i++)bit(CX-40+(i%5)*20+(i>4?10:0),72+Math.floor(i/5)*17,6,s.pr.col[i%s.pr.col.length],s.pr.sh,i*2.3);
+ /* timbangan */
+ g.fillStyle=lg(0,PLAT,0,H,["#d9dfeb","#9ea8bb"]);g.strokeStyle="#eef2fa";g.beginPath();g.moveTo(CX-190,PLAT+12);g.lineTo(CX+190,PLAT+12);g.lineTo(CX+208,H-6);g.lineTo(CX-208,H-6);g.closePath();g.fill();g.stroke();
+ g.fillStyle=lg(CX-100,0,CX+100,0,["#9aa4b8","#f4f7fc","#9aa4b8"]);rr(CX-104,PLAT,208,12,5);g.fill();g.fillStyle="rgba(255,255,255,.35)";g.fillRect(CX-90,PLAT+1,180,2);
+ g.fillStyle="#10200c";rr(CX-136,PLAT+30,272,78,8);g.fill();const lcd=tick&&Math.floor(now*4)%2?"#e6a39a":"#b7d99a";g.fillStyle=lg(0,PLAT+34,0,PLAT+104,[lcd,"#9bc27a"]);rr(CX-130,PLAT+34,260,70,5);g.fill();
+ g.save();g.beginPath();g.rect(CX-130,PLAT+34,260,70);g.clip();g.fillStyle="rgba(255,255,255,.18)";g.beginPath();g.moveTo(CX-130,PLAT+34);g.lineTo(CX-10,PLAT+34);g.lineTo(CX-60,PLAT+104);g.lineTo(CX-130,PLAT+104);g.fill();g.restore();
+ g.fillStyle="#1a2b12";g.textAlign="right";let v=shown();if(s.level>=4&&s.mode==="play"&&Math.sin(now*9)>.97)v+=.1;
+ if(s.mode==="menu"||s.mode==="label"){g.font="bold 36px 'Courier New',monospace";g.fillText("--.-",CX+96,PLAT+84)}else{g.font="bold 42px 'Courier New',monospace";g.fillText(Math.max(0,v).toFixed(1),CX+96,PLAT+86)}
+ g.font="bold 16px 'Courier New',monospace";g.fillText("g",CX+120,PLAT+86);if(s.tare){g.textAlign="left";g.font="bold 11px sans-serif";g.fillText("TARE",CX-122,PLAT+50)}
+ g.textAlign="center";g.fillStyle="#3a4358";g.font="bold 11px sans-serif";g.fillText("Timbangan elektronik · bertanda tera sah",CX,PLAT+128);[-60,-30,0].forEach(d=>{g.fillStyle="#6a7388";g.beginPath();g.arc(CX+d,PLAT+142,6,0,7);g.fill()});
+ /* kemasan */
+const pp=s.pr,[x1,y1,x2,y2]=pouchBox(),K=pp.kind;g.fillStyle=lg(x1,0,x2,0,[pp.c1,pp.c2,pp.c1]);g.strokeStyle=pp.c1;g.lineWidth=3;g.beginPath();
+ if(K==="b"){g.moveTo(x1+6,y1+34);g.lineTo(CX-22,y1+22);g.lineTo(CX-22,y1+8);g.lineTo(CX+22,y1+8);g.lineTo(CX+22,y1+22);g.lineTo(x2-6,y1+34);g.lineTo(x2,y1+46);g.lineTo(x2,y2);g.lineTo(x1,y2);g.lineTo(x1,y1+46)}
+ else if(K==="c")g.rect(x1,y1+8,x2-x1,y2-y1-8);else{g.moveTo(x1,y1+8);g.lineTo(x1+10,y1);g.lineTo(x2-10,y1);g.lineTo(x2,y1+8);g.lineTo(x2,y2);g.lineTo(x1,y2)}
+ g.closePath();g.fill();g.stroke();g.strokeStyle="rgba(255,255,255,.45)";g.lineWidth=1;
+ if(K==="p"){for(let xx=x1+6;xx<x2-4;xx+=8){g.beginPath();g.moveTo(xx,y1+3);g.lineTo(xx,y1+11);g.stroke()}g.beginPath();g.moveTo(x1+4,y1+18);g.lineTo(x2-4,y1+18);g.stroke()}
+ else if(K==="c"){g.fillStyle="#d7dce6";g.fillRect(x1-2,y1+4,x2-x1+4,9);g.fillRect(x1-2,y2-9,x2-x1+4,9);g.fillStyle="rgba(255,255,255,.5)";g.fillRect(x1+8,y1+16,6,y2-y1-30)}
+ else{g.fillStyle=pp.ac;g.fillRect(CX-25,y1-2,50,12);g.fillStyle="rgba(255,255,255,.5)";g.fillRect(x1+8,y1+50,6,y2-y1-70)}
+ g.fillStyle=pp.ac;g.font="bold 20px sans-serif";g.textAlign="center";g.fillText(pp.b,CX,y1+(K==="b"?48:42));
+ rr(x1+8,y1+52,x2-x1-16,52,10);g.fillStyle="#fff";g.fill();g.strokeStyle=pp.ac;g.lineWidth=2;g.stroke();g.fillStyle="#2b2b3a";const mn=s.mode==="menu";
+ if(!mn&&s.m2==="tuntas"){g.font="bold 15px sans-serif";g.fillText("Bobot tuntas "+s.tg+" g",CX,y1+72);g.fillText("Berat bersih "+s.qg+" g",CX,y1+95)}
+ else{g.font="bold 10px sans-serif";g.fillText(mn?"BERAT BERSIH":s.m2==="jumlah"?"ISI":s.m2==="volume"?"ISI BERSIH":"BERAT BERSIH",CX,y1+65);g.font="bold 36px 'Trebuchet MS',sans-serif";g.fillText(mn?"? g":s.m2==="jumlah"?s.cnt:s.m2==="volume"?s.qg+" mL":s.qg+" g",CX,y1+98)}
+ if(s.hintOn&&s.mode==="play"){const v=((s.pouch+(s.m2==="tuntas"&&s.phase===1?s.qT:s.qn)-s.tare)/T).toFixed(1),bx=10,by=y1+50,bw=118,bh=56;rr(bx,by,bw,bh,12);g.fillStyle="#ffcc2a";g.fill();g.strokeStyle="#fff";g.lineWidth=2;g.stroke();g.fillStyle="#1a1030";g.font="bold 30px 'Trebuchet MS',sans-serif";g.textAlign="center";g.fillText(v+" g",bx+bw/2,by+39);g.fillStyle="#ffcc2a";g.beginPath();g.moveTo(bx+bw-1,by+14);g.lineTo(bx+bw+15,by+28);g.lineTo(bx+bw-1,by+42);g.fill()}
+ if(s.leaked&&s.mode==="play"){g.fillStyle="#ff8c8c";g.font="bold 15px sans-serif";g.textAlign="left";g.fillText("⚠ Kemasan bocor!",12,y1+20);g.strokeStyle="#111";g.lineWidth=2;g.beginPath();g.moveTo(x2-34,y2-70);g.lineTo(x2-24,y2-56);g.lineTo(x2-36,y2-44);g.lineTo(x2-26,y2-30);g.stroke()}
+ const[wx1,wy1,wx2,wy2]=winBox();g.fillStyle=s.pr.sh===2?"#7c8699":"#fff3e0";rr(wx1,wy1,wx2-wx1,wy2-wy1,6);g.fill();g.strokeStyle="#2f1448";g.lineWidth=2;g.stroke();
+ if(s.mode!=="menu"&&s.mode!=="label"){const p=s.pr,lc=s.m2==="volume"?p.col[0]:p.lc;
+  if(s.liq>0){const hh=(wy2-wy1-6)*Math.min(1,net()/(s.qn*1.15));g.fillStyle=lc;g.globalAlpha=.9;g.fillRect(wx1+3,wy2-3-hh,wx2-wx1-6,hh);g.globalAlpha=1;g.fillStyle="rgba(255,255,255,.4)";g.fillRect(wx1+3,wy2-3-hh,wx2-wx1-6,2)}
+  s.landed.forEach((c,i)=>{const L=Math.floor(i/p.per),k=i%p.per;const x=wx1+12+k*(wx2-wx1-24)/(p.per-1)+c.jx;let y=wy2-8-L*s.stE+c.jy;y=Math.max(y,wy1+6+(L%2)*2);bit(x,y,c.w,c.c,p.sh,c.r)});
+  s.falling.forEach(f=>bit(f.x,f.y,f.w,f.fl?lc:f.c,f.fl?9:p.sh,f.r))}
+ g.fillStyle="rgba(255,255,255,.12)";g.fillRect(x1+6,y1+10,10,y2-y1-20);
+ conf=conf.filter(c=>c.l>0);conf.forEach(c=>{c.x+=c.vx*.033;c.y+=c.vy*.033;c.vy+=18;c.l-=.033;g.fillStyle=c.c;g.fillRect(c.x,c.y,5,8)});
+ const SP=s.spill||s.leakFx;if(SP){const t=performance.now()/1000-SP.t0;if(t<3.2){const sp=SP,a=Math.min(1,t*1.5);g.fillStyle=sp.col;g.globalAlpha=.85;g.beginPath();g.ellipse(CX,PLAT+4,40+a*120,6+a*10,0,0,7);g.fill();g.globalAlpha=1;for(let i=0;i<14;i++){const an=i*.45+t,rr2=20+t*90;g.beginPath();g.arc(CX+Math.cos(an)*rr2,PLAT-30+Math.sin(an)*rr2*.5-t*10,3,0,7);g.fill()}
+ if(sp.sev&&fx){g.fillStyle="rgba(229,72,77,"+(Math.sin(t*20)>0?.35:.1)+")";g.fillRect(0,0,W,H);g.fillStyle="#ffcc2a";for(let i=0;i<8;i++)g.fillRect(CX-90+R()*180,PLAT+34+R()*70,3,3+R()*10)}
+ g.font="bold 26px sans-serif";g.textAlign="center";g.strokeStyle="#000";g.lineWidth=4;g.fillStyle="#fff";const tx=sp.sev===3?"TIMBANGAN RUSAK FATAL!":sp.sev?"TIMBANGAN RUSAK!":SP===s.leakFx?"BOCOR!":"TUMPAH!";g.strokeText(tx,CX,70);g.fillText(tx,CX,70)}}
+ if(s.noteT>0){s.noteT-=.033;g.fillStyle="rgba(10,15,35,.88)";rr(10,6,W-20,26,8);g.fill();g.fillStyle="#ffb3b3";g.font="bold 13px sans-serif";g.textAlign="center";g.fillText(s.noteTxt,CX,24)}
+ if(s.paused){g.fillStyle="rgba(0,0,0,.55)";g.fillRect(0,0,W,H);g.fillStyle="#fff";g.font="bold 30px sans-serif";g.textAlign="center";g.fillText("Jeda",CX,H/2)}g.restore()}
+let last=performance.now();function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;if(s.mode==="play"&&!s.paused)update(dt);draw();hud();requestAnimationFrame(loop)}
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&s.mode==="play")s.paused=true;else if(!document.hidden)last=performance.now()});
+/* input */
+function holdBtn(id,mode){const b=$(id);b.addEventListener("pointerdown",e=>{e.preventDefault();s.ptr=mode;b.classList.add("on");try{b.setPointerCapture(e.pointerId)}catch(x){}pourStart()});
+ ["pointerup","pointercancel","lostpointercapture"].forEach(n=>b.addEventListener(n,()=>{if(s.ptr===mode)s.ptr=0;b.classList.remove("on")}));b.addEventListener("contextmenu",e=>e.preventDefault())}
+holdBtn("pour",1);holdBtn("pour2",2);
 $("take").addEventListener("click",take);$("tare").addEventListener("click",tare);$("seal").addEventListener("click",seal);$("pause").addEventListener("click",togglePause);
-$("ob").addEventListener("click",advance);
-$("hint").addEventListener("click",()=>{s.hint=!s.hint;$("hint").textContent="Bantuan target: "+(s.hint?"hidup":"mati");});
-document.addEventListener("keydown",e=>{
-  if(e.code==="Space"){if(e.target.tagName==="BUTTON"&&e.target!==pb&&s.mode!=="play")return;e.preventDefault();
-    if(!e.repeat&&!s.key){s.key=true;pb.classList.add("on");pourStart();}}
-  else if(e.key==="Backspace")take();
-  else if(e.key==="t"||e.key==="T")tare();
-  else if(e.key==="h"||e.key==="H")$("hint").click();
-  else if(e.key==="Enter"){if(s.mode==="play"){e.preventDefault();seal();}}
-  else if(e.key==="p"||e.key==="P")togglePause();});
-document.addEventListener("keyup",e=>{if(e.code==="Space"){s.key=false;if(!s.ptr)pb.classList.remove("on");}});
-
-window.__timbangIsi={judge,overLimit,timeLimit,rate};
-showMenu();requestAnimationFrame(loop);
+$("ob").addEventListener("click",adv);$("ob2").addEventListener("click",alt);
+[1,2,3].forEach(n=>{$("h"+n).addEventListener("click",()=>useHelp(n-1));$("b"+n).addEventListener("click",()=>buy(n-1))});
+$("inf").addEventListener("click",()=>{const q=$("infp");q.hidden=!q.hidden;$("inf").setAttribute("aria-expanded",String(!q.hidden));$("inf").textContent=q.hidden?"ⓘ Informasi":"ⓘ Tutup informasi"});$("swap").addEventListener("click",swap);$("rst").addEventListener("click",reset);
+$("vib").addEventListener("click",()=>{vb=!vb;$("vib").textContent="Getar (O): "+(vb?"hidup":"mati")});$("fx").addEventListener("click",()=>{fx=!fx;$("fx").textContent="Efek (P): "+(fx?"hidup":"mati")});
+$("snd").addEventListener("click",()=>{on=!on;$("snd").textContent="Suara (I): "+(on?"hidup":"mati")});
+$("ox").addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("button.op");if(b)answer(+b.dataset.i)});
+document.addEventListener("keydown",e=>{const c=e.code;
+ if(c==="Space"){if(e.target.tagName==="BUTTON"&&s.mode!=="play")return;e.preventDefault();if(!e.repeat&&!s.key){s.key=true;$("pour").classList.add("on");pourStart()}return}
+ if(c==="ShiftLeft"||c==="ShiftRight"){if(!s.shift){s.shift=true;$("pour2").classList.add("on");pourStart()}return}
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
+ if(/^Digit[1-4]$/.test(c)){const n=+c[5];if(s.mode==="label"&&s.qa)answer(n-1);else if(n<4)useHelp(n-1);e.preventDefault();return}
+ const f={KeyT:tare,KeyY:swap,Backspace:take,Delete:reset,Escape:togglePause,KeyQ:()=>buy(0),KeyW:()=>buy(1),KeyE:()=>buy(2),KeyI:()=>$("snd").click(),KeyO:()=>$("vib").click(),KeyP:()=>$("fx").click(),Enter:()=>{if(s.mode==="play")seal();else if(s.introGo)s.introGo();else if(!$("ob").hidden)adv()}}[c];
+ if(f){e.preventDefault();if(!e.repeat||c==="Backspace")f()}});
+document.addEventListener("keyup",e=>{if(e.code==="Space"){s.key=false;if(!s.ptr)$("pour").classList.remove("on")}if(e.code==="ShiftLeft"||e.code==="ShiftRight"){s.shift=false;$("pour2").classList.remove("on")}});
+window.addEventListener("blur",()=>{s.key=false;s.shift=false;s.ptr=0});
+window.__dbg={s,pickEntry,WS,geom,leakCost,QZ,answer,gate,setup,startRound,net,tpour,UNL,P,finish,doSpill,timeLimit,kq,rate};window.__timbangIsi={judge,overLimit,timeLimit,rate,P,kq};showMenu();requestAnimationFrame(loop);
 })();
 </script>
 </body>
