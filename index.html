@@ -71,7 +71,7 @@ html,body{height:100%}body{display:flex;justify-content:center;align-items:flex-
 #infp{position:absolute;inset:calc(var(--u)*2);z-index:6;background:#fff;border:3px solid var(--accent);border-radius:14px;padding:calc(var(--u)*2.5);overflow:auto;font-size:calc(var(--u)*2.9);margin:0}#infp[hidden]{display:none}
 #ov,#up{z-index:4}#ov>div{max-height:100%;overflow:auto}
 .fxo{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}.fxo i{position:absolute;top:-10%;font-style:normal;animation:fl 3s linear infinite}@keyframes fl{to{transform:translateY(130%) rotate(360deg)}}
-.fxo.trust{background:radial-gradient(#0000,#e5484d88);animation:fh .5s 5}.fxo.neg{background:linear-gradient(#000a,#ff8c1a44)}.fxo.lv{background:radial-gradient(#0000,#8e5cf077)}@keyframes fh{50%{background-color:#e5484d66}}.s6{grid-column:span 6}#take,#swap,#tare{font-size:calc(var(--u)*4.8)}.sm{font-size:calc(var(--u)*2.1);border-radius:calc(var(--u)*2);box-shadow:0 calc(var(--u)*.5) 0 var(--d),inset 0 calc(var(--u)*.25) 0 #fff7,0 calc(var(--u)*.8) calc(var(--u)*.8) #0004}.sm small{font-size:calc(var(--u)*1.1)}.k.sel{box-shadow:0 0 0 calc(var(--u)*.8) #ffd54a,0 calc(var(--u)*.9) 0 var(--d)}#av.lux{animation:lux 1.5s}@keyframes lux{0%{transform:scale(1)}30%{transform:scale(1.4);box-shadow:0 0 0 calc(var(--u)*.8) #ffd54a,0 0 calc(var(--u)*4) calc(var(--u)*1.5) #ffcc2a}100%{transform:scale(1)}}.shake{animation:shk .15s 6}
+.fxo.trust{background:radial-gradient(#0000,#e5484d88);animation:fh .5s 5}.fxo.neg{background:linear-gradient(#000a,#ff8c1a44)}.fxo.lv{background:radial-gradient(#0000,#8e5cf077)}@keyframes fh{50%{background-color:#e5484d66}}.s6{grid-column:span 6}#take,#swap,#tare{font-size:calc(var(--u)*4.8)}.sm{font-size:calc(var(--u)*2.1);border-radius:calc(var(--u)*2);box-shadow:0 calc(var(--u)*.5) 0 var(--d),inset 0 calc(var(--u)*.25) 0 #fff7,0 calc(var(--u)*.8) calc(var(--u)*.8) #0004}.sm small{font-size:calc(var(--u)*1.1)}#pour.sel{box-shadow:0 calc(var(--u)*.9) 0 var(--d),inset 0 calc(var(--u)*.5) 0 #fff7,0 calc(var(--u)*1.4) calc(var(--u)*1.4) #0004}.k.sel{box-shadow:0 0 0 calc(var(--u)*.8) #ffd54a,0 calc(var(--u)*.9) 0 var(--d)}#av.lux{animation:lux 1.5s}@keyframes lux{0%{transform:scale(1)}30%{transform:scale(1.4);box-shadow:0 0 0 calc(var(--u)*.8) #ffd54a,0 0 calc(var(--u)*4) calc(var(--u)*1.5) #ffcc2a}100%{transform:scale(1)}}.shake{animation:shk .15s 6}
 </style>
 </head>
 <body>
@@ -86,7 +86,7 @@ html,body{height:100%}body{display:flex;justify-content:center;align-items:flex-
 <button class="k s6 sm" id="rst" style="--a:#ff5a52;--b:#e0231d;--d:#a31510">Reset<small>Del</small></button>
 <button class="k s6 sm" id="rst2" style="--a:#ffa61f;--b:#e8790a;--d:#9c4d00">Restart<small>J</small></button>
 <button class="k s6 sm" id="pause" style="--a:#ffe14d;--b:#f2b800;--d:#b58700"><span id="pl">Jeda</span><small>Esc</small></button>
-<button class="k s11" id="pour" style="--a:#d467f0;--b:#a52fc9;--d:#74208f">Tuang Produk<small>Space</small></button>
+<button class="k s11" id="pour" style="--a:#e69bf9;--b:#9a2bc0;--d:#5a1673">Tuang Produk<small>Space</small></button>
 <button class="k s5 z" id="pour2" style="--a:#d9884f;--b:#8f4a1e;--d:#5e2f10;color:#fff">Tuang Cairan<small>Shift</small></button>
 <button class="k s8" id="seal" style="--a:#7be04a;--b:#37b21f;--d:#1f7d10">Kemas<small>Enter</small></button>
 <button class="k s8" id="take" style="--a:#f0b3ff;--b:#dc8cf5;--d:#a95ec2">Kurangi<small>Backspace</small></button>
