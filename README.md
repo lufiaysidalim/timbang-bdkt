@@ -22,6 +22,8 @@ Buka `index.html` di peramban, atau gunakan tautan GitHub Pages repositori ini.
 - **Berlebih**: kepercayaan naik 0,5x persen kelebihan (maksimal 5%), tetapi untung berkurang. Lebih dari 10% menjadi kerugian kas.
 - **Waktu habis**: kemasan kosong, kepercayaan turun 20% tanpa kerugian kas. Kemasan sudah berisi tetapi belum dikemas, kepercayaan turun 25% dan kas berkurang sebesar nilai produk di kemasan.
 - **Salah cairan**: Tuang Cairan pada produk selain bobot tuntas membuat isi terkontaminasi.
+- **Bobot tuntas**: kelebihan cairan pengisi dihargai Rp 5 per gram dan mengurangi untung, bahkan bisa merugikan kas.
+- **Mode Latihan**: tidak ada produk tumpah, hanya informasi bahwa menimbang berlebih mengurangi untung di permainan utama.
 - Mulai level 61 kemasan bisa bocor, mulai level 66 isi berlebih bisa tumpah, dan mulai level 76 cairan tertentu merusak timbangan.
 - **Kalah** jika kepercayaan 0%, kas negatif 5 level berturut-turut, atau level 100 selesai dengan kas negatif.
 - **Menang** jika level 100 selesai dengan kas positif.
