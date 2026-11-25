@@ -9,7 +9,11 @@ Satu file saja (`index.html`), tanpa instalasi, tanpa server, dan bisa dimainkan
 Buka `index.html` di peramban, atau gunakan tautan GitHub Pages repositori ini.
 
 - **Mulai Main**: permainan penuh 100 level dengan pangkat dari Karyawan Magang sampai CEO.
-- **Latihan Dahulu**: berlatih menakar **jumlah isi** atau **berat bersih** tanpa skor, kas, dan kepercayaan. Boleh diulang sebanyak mungkin.
+- **Latihan Dahulu**: empat latihan tanpa skor, kas, dan kepercayaan, boleh diulang sebanyak mungkin, dengan waktu 150% dari waktu normal dan penjelasan cara bermain sebelum mulai. Pilih dengan tombol angka:
+  1. Menakar Jumlah Isi: permen buah, 2 sampai 8 butir.
+  2. Menimbang Berat Bersih: tepung terigu, 10 sampai 40 g.
+  3. Menimbang Bobot Tuntas: jamur kancing, berat bersih 10 sampai 40 g.
+  4. Menimbang Isi Bersih: air mineral (massa jenis 1,1 g/mL), 10 sampai 40 mL.
 
 ### Aturan singkat
 
@@ -41,7 +45,7 @@ Penjelasan lengkap dengan gambar ada di menu **Informasi** di dalam game (tombol
 | `Del` | Reset dari awal |
 | `L` | Pilih level (perlu password) |
 | `K` | Informasi (slide: panah kiri dan kanan, `Esc` keluar) |
-| `Home` | Kembali ke menu awal (konfirmasi: `Y` atau `T`) |
+| `Home` | Kembali ke menu awal (konfirmasi: `Enter` = Ya, `Space` = Tidak) |
 | `I` `O` `P` | Suara, Getar, Efek |
 
 Di layar sentuh: tekan dan tahan kemasan untuk menuang, ketuk dua kali untuk ganti produk atau cairan, geser atas untuk Tare, kiri untuk Kurangi, bawah untuk Ganti, dan kanan untuk Kemas.
