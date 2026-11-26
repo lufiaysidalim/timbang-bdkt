@@ -22,13 +22,42 @@ Buka `index.html` di peramban, atau gunakan tautan GitHub Pages repositori ini.
 - **Berlebih**: kepercayaan naik 0,5x persen kelebihan (maksimal 5%), tetapi untung berkurang. Lebih dari 10% menjadi kerugian kas.
 - **Waktu habis**: kemasan kosong, kepercayaan turun 20% tanpa kerugian kas. Kemasan sudah berisi tetapi belum dikemas, kepercayaan turun 25% dan kas berkurang sebesar nilai produk di kemasan.
 - **Salah cairan**: Tuang Cairan pada produk selain bobot tuntas membuat isi terkontaminasi.
-- **Bobot tuntas**: kelebihan cairan pengisi dihargai Rp 5 per gram dan mengurangi untung, bahkan bisa merugikan kas.
+- **Bobot tuntas**: untung = 10% x nilai bobot tuntas (hanya produk utama, bukan 10% x berat bersih). Kelebihan cairan pengisi dihargai Rp 20 per gram dan mengurangi untung. Kelebihan produk utama (jamur, buah, sarden) tetap mengurangi untung sesuai harga produknya, dan bila lebih dari bobot tuntas +10% untung habis dan kas berkurang. Sebelum level 66 belum ada aturan tumpah, jadi kelebihan bisa sangat banyak sampai merugikan kas.
 - **Mode Latihan**: tidak ada produk tumpah, hanya informasi bahwa menimbang berlebih mengurangi untung di permainan utama.
-- Mulai level 61 kemasan bisa bocor, mulai level 66 isi berlebih bisa tumpah, dan mulai level 76 cairan tertentu merusak timbangan.
+- **Tinggi isi sebanding berat**: kemasan penuh berarti isi mencapai ujung atas bagian bening (tepi jendela, bibir kaleng, atau leher botol), yaitu berat label +10% (minimal +1 g). Mulai level 66, isi sampai titik itu tumpah.
+- Mulai level 61 kemasan bisa bocor (baru ketahuan setelah diisi), mulai level 66 isi berlebih bisa tumpah, dan mulai level 76 cairan tertentu merusak timbangan.
+- **Kerusakan timbangan** (bocor = 50% dari biaya tumpah):
+
+| Cairan | Bocor | Tumpah |
+|---|---|---|
+| Kecap (Lv 76) | Rusak ringan, Rp 1.500 | Rusak ringan, Rp 3.000 |
+| Minyak (Lv 86) | Rusak ringan, Rp 2.500 | Rusak berat, Rp 5.000 |
+| Air mineral (Lv 96) | Rusak berat, Rp 5.000 | Rusak fatal, Rp 10.000 |
+
+  Bocor atau tumpah produk padat Rp 500 dan cairan lain Rp 1.000. Saat kejadian muncul kartu keterangan beserta ikon kerusakan, dan seluruh kotak area permainan berkedip transparan sebagai peringatan (ikut pengaturan Efek, tombol `P`).
 - **Kalah** jika kepercayaan 0%, kas negatif 5 level berturut-turut, atau level 100 selesai dengan kas negatif.
 - **Menang** jika level 100 selesai dengan kas positif.
 
 Penjelasan lengkap dengan gambar ada di menu **Informasi** di dalam game (tombol `K`).
+
+## Bentuk kemasan
+
+Setiap produk punya bentuk kemasan sendiri, tetap dengan bagian bening untuk melihat isi, merek, keterangan kuantitas, angka, dan satuan. Ukuran kemasan mengikuti kuantitas dan kaca pembesar memperbesar keterangan pada label.
+
+| Produk | Kemasan |
+|---|---|
+| Permen buah | Kantong permen kenyal bergigi segel |
+| Wafer vanila | Bungkus flow-pack dengan ujung bergerigi |
+| Coklat bar | Bar berbungkus foil ungu |
+| Keripik ubi | Pouch berdiri premium dengan zipper |
+| Kacang oven | Toples bening bertutup merah |
+| Tepung terigu | Kantong kertas berjendela plastik |
+| Jamur kancing | Pouch bening dengan kartu header |
+| Potongan buah | Kaleng tinggi |
+| Ikan sarden | Kaleng sarden lebar dengan cincin tarik |
+| Kecap manis | Botol plastik bahu lebar |
+| Minyak sawit | Botol minyak bergagang |
+| Air mineral | Botol PET bergelombang |
 
 ## Pintasan keyboard
 
