@@ -24,6 +24,7 @@ Buka `index.html` di peramban, atau gunakan tautan GitHub Pages repositori ini.
 - **Salah cairan**: Tuang Cairan pada produk selain bobot tuntas membuat isi terkontaminasi.
 - **Bobot tuntas**: untung = 10% x nilai bobot tuntas (hanya produk utama, bukan 10% x berat bersih). Kelebihan cairan pengisi dihargai Rp 20 per gram dan mengurangi untung. Kelebihan produk utama (jamur, buah, sarden) tetap mengurangi untung sesuai harga produknya, dan bila lebih dari bobot tuntas +10% untung habis dan kas berkurang. Sebelum level 66 belum ada aturan tumpah, jadi kelebihan bisa sangat banyak sampai merugikan kas.
 - **Mode Latihan**: tidak ada produk tumpah, hanya informasi bahwa menimbang berlebih mengurangi untung di permainan utama.
+- **Kuis pelabelan**: waktu menjawab 6 sampai 12 detik, menyesuaikan panjang soal dan pilihan jawaban.
 - **Tinggi isi sebanding berat**: kemasan penuh berarti isi mencapai ujung atas bagian bening (tepi jendela, bibir kaleng, atau leher botol), yaitu berat label +10% (minimal +1 g). Mulai level 66, isi sampai titik itu tumpah.
 - Mulai level 61 kemasan bisa bocor (baru ketahuan setelah diisi), mulai level 66 isi berlebih bisa tumpah, dan mulai level 76 cairan tertentu merusak timbangan.
 - **Kerusakan timbangan** (bocor = 50% dari biaya tumpah):
@@ -42,7 +43,7 @@ Penjelasan lengkap dengan gambar ada di menu **Informasi** di dalam game (tombol
 
 ## Bentuk kemasan
 
-Setiap produk punya bentuk kemasan sendiri, tetap dengan bagian bening untuk melihat isi, merek, keterangan kuantitas, angka, dan satuan. Ukuran kemasan mengikuti kuantitas dan kaca pembesar memperbesar keterangan pada label.
+Setiap produk punya bentuk kemasan sendiri, tetap dengan bagian bening untuk melihat isi, merek, keterangan kuantitas, angka, dan satuan. Ukuran kemasan menyesuaikan label (jumlah isi, berat bersih, bobot tuntas, atau isi bersih): label kecil = kemasan kecil, label besar = kemasan besar, tetapi selalu muat di antara corong dan timbangan. Ukuran butiran produk tetap untuk tiap produk dan jenis takaran, sama dengan butiran di corong dan yang masuk ke kemasan. Kemasan penuh tepat pada label +10%. Kaca pembesar memperbesar keterangan pada label.
 
 | Produk | Kemasan |
 |---|---|
