@@ -80,7 +80,7 @@ Setiap produk punya bentuk kemasan sendiri, tetap dengan bagian bening untuk mel
 | `Home` | Kembali ke menu awal (konfirmasi: `Enter` = Ya, `Space` = Tidak) |
 | `I` `O` `P` | Suara, Getar, Efek |
 
-Tampilan menyesuaikan perangkat: di browser HP (layar sentuh, posisi potret) semua tombol di bawah kotak permainan dibuat 140% lebih tinggi agar mudah ditekan, sedangkan tampilan browser desktop tidak berubah.
+Tampilan menyesuaikan perangkat. Di browser HP (layar sentuh, posisi potret) area permainan dibuat lebih tinggi (sekitar 1,2:1) sehingga timbangan, corong produk dan cairan pengisi, serta kemasan tampil lebih besar. Tombol bantuan di kanan dan tombol bulat Suara, Getar, Efek di kiri diperbesar 150% dan disusun vertikal rapi, semua tombol di bawah kotak permainan dibuat 140% lebih tinggi, dan kemasan sedikit lebih besar. Tampilan browser desktop tidak berubah.
 
 Di layar sentuh: tekan dan tahan kemasan untuk menuang, ketuk dua kali untuk ganti produk atau cairan, geser atas untuk Tare, kiri untuk Kurangi, bawah untuk Ganti, dan kanan untuk Kemas.
 

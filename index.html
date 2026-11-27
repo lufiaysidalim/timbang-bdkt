@@ -120,7 +120,15 @@ html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:1
 #alr{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background:var(--ac,rgba(255,150,0,.3));box-shadow:inset 0 0 calc(var(--u)*7) calc(var(--u)*1.2) var(--ab,rgba(255,150,0,.9))}
 #alr.on{animation:alrk var(--ad,1.8s) linear 1 both}
 @keyframes alrk{0%,100%{opacity:0}6%,26%,46%,66%,86%{opacity:1}16%,36%,56%,76%{opacity:.1}}
-@media (pointer:coarse) and (orientation:portrait){.g{--u:min(1vw,.7dvh);height:calc(var(--u)*140);grid-template-rows:7fr 4fr 44fr 3fr 3.92fr 13.3fr 13.3fr 7.7fr 5.6fr}}
+@media (pointer:coarse) and (orientation:portrait){
+.g{--u:min(1vw,.6dvh);height:calc(var(--u)*166.5);grid-template-rows:7fr 4fr 66fr 3fr 3.92fr 13.3fr 13.3fr 7.7fr 5.6fr}
+.tgl{flex-direction:column;gap:calc(var(--u)*1.2)}
+.ic{width:calc(var(--u)*11.25);height:calc(var(--u)*11.25)}
+.hb{gap:calc(var(--u)*1.2)}
+.hb button{width:calc(var(--u)*12.6);height:calc(var(--u)*12.6)}
+.hb b.c{width:calc(var(--u)*4.2);height:calc(var(--u)*4.2);font-size:calc(var(--u)*2.55);top:calc(var(--u)*-.45);right:calc(var(--u)*-.45);border-width:calc(var(--u)*.45)}
+.hb button::after{width:calc(var(--u)*3.9);height:calc(var(--u)*3.9);font-size:calc(var(--u)*2.4);left:calc(var(--u)*-.45);bottom:calc(var(--u)*.45);border-width:calc(var(--u)*.38)}
+}
 #ov .dm{display:flex;gap:8px;align-items:center;text-align:left;font-size:12.5px;line-height:1.3;background:rgba(196,43,82,.08);border:1px solid rgba(196,43,82,.35);border-radius:10px;padding:5px 8px;margin:7px 0}#ov .dm img{height:60px;width:auto;flex:none}
 </style>
 </head>
@@ -265,17 +273,17 @@ function begin(){const lv=s.level+1,u=UNL.find(x=>x[0]===lv),ev=EVT[lv];if(!s.da
 function startRound(){s.lvS=s.prac&&s.pmode==="tuntas"?46:Math.min(100,s.level+1);fillReset();s.extra=0;s.dl=[];s.dmgS=null;s.dmgI=null;s.dmgT=0;alertFx(null);s.leakFx=null;geom();s.tl=timeLimit(s.tpN,s.level+1)*(s.prac?1.5:1);s.left=s.tl;s.held=0;s.acc=0;s.mode="play";s.paused=false;s.hintOn=false;s.shield=false;s.timeUsed=false;s.swaps=0;if(s.prac)s.help=[1,1,1];newPouch();if(s.forceLeak){s.leak=true;s.leaked=true}ov(false)}
 /* Ukuran kemasan mengikuti label (jumlah isi / berat bersih / bobot tuntas / isi bersih); ukuran butiran tetap per produk
    dan sama dengan butiran di corong. Penuh tepat pada label +10%. Kemasan dibatasi PF 0,38..1 (muat antara corong dan timbangan). */
-const PFMIN=.38,PFMAX=.92,ZB={};
+const MQ=matchMedia("(pointer:coarse) and (orientation:portrait)"),pfMin=()=>MQ.matches?.46:.38,pfMax=()=>MQ.matches?1:.92,ZB={};
 function pcDim(p){const sr=SPR[p.sh]&&SPR[p.sh][0],tw=TW[p.sh]||12;let fw=tw,fh=tw*.6;if(sr&&sr.w&&sr.h){const r=sr.h/sr.w;if(r<=1){fw=tw;fh=tw*r}else{fh=tw;fw=tw/r}}return[fw,fh]}
 function fitZ(p,c,S,N){const[fw,fh]=pcDim(p),Ww=c.W*S,Hh=c.H*S;let z=2.4;for(;z>.3;z-=.02){const nr=Math.max(1,Math.floor(Ww/(fw*z*.75)));if(Math.ceil(N/nr)*fh*z*.65<=Hh)break}return Math.max(.3,z)}
 function nHi(p,m){const q=m==="jumlah"?20*p.cs[0]:m==="tuntas"?120*T:100*T;return(q+overLimit(q))/((p.cs[0]+p.cs[1])/2)}
 function geom(){const p=s.pr,id=p.id,sp=PKS[id],c=cavInfo(id);s.cap=s.qn+overLimit(s.qn);s.gi=0;s.gs=R();s.gpid=id;
  const[fw,fh]=pcDim(p);let PF,z=1;
- if(p.sh===9)PF=Math.min(PFMAX,Math.max(PFMIN,PFMAX*Math.cbrt(s.cap/1430)));
- else if(p.sh===2)PF=Math.min(PFMAX,Math.max(PFMIN,PFMAX*Math.sqrt(s.cap/1100)));
- else{const N=Math.max(1,s.cap/((p.cs[0]+p.cs[1])/2)),Nh=nHi(p,s.m2),key=id+s.m2,z0=ZB[key]||(ZB[key]=fitZ(p,c,sp.k*PFMAX,Nh));
-  PF=Math.min(PFMAX,Math.max(PFMIN,PFMAX*Math.sqrt(N/Nh)));let zf=fitZ(p,c,sp.k*PF,N);
-  if(PF>PFMIN){for(let g=0;g<80&&zf<z0&&PF<PFMAX;g++){PF=Math.min(PFMAX,PF*1.02);zf=fitZ(p,c,sp.k*PF,N)}z=Math.min(z0,zf)}else z=zf}
+ if(p.sh===9)PF=Math.min(pfMax(),Math.max(pfMin(),pfMax()*Math.cbrt(s.cap/1430)));
+ else if(p.sh===2)PF=Math.min(pfMax(),Math.max(pfMin(),pfMax()*Math.sqrt(s.cap/1100)));
+ else{const N=Math.max(1,s.cap/((p.cs[0]+p.cs[1])/2)),Nh=nHi(p,s.m2),key=id+s.m2+(MQ.matches?'m':'d'),z0=ZB[key]||(ZB[key]=fitZ(p,c,sp.k*pfMax(),Nh));
+  PF=Math.min(pfMax(),Math.max(pfMin(),pfMax()*Math.sqrt(N/Nh)));let zf=fitZ(p,c,sp.k*PF,N);
+  if(PF>pfMin()){for(let g=0;g<80&&zf<z0&&PF<pfMax();g++){PF=Math.min(pfMax(),PF*1.02);zf=fitZ(p,c,sp.k*PF,N)}z=Math.min(z0,zf)}else z=zf}
  s.pf=PF;s.psz=Math.max(.3,z);s.fw=fw*s.psz;s.fh=fh*s.psz;s.dsz=p.sh===2?Math.max(.5,sp.k*PF*1.2):s.psz}
 function intro(lv,u,ev,cb){const el=$("up");s.mode="rankup";ov(false);const k=ev&&ev[3]?ev[3]:K(u[1],u[2]),a=k.split("|"),pr=P.find(x=>x.id===a[0]);let ic,t1,t2;
  if(ev){ic=im(EVI[lv],"Aturan",130);t1=ev[0];t2=ev[2]+" "+INFO[a[1]]}else{ic=`<img alt="Produk" src="${PIM[pr.id].src}" style="height:150px;max-width:100%;vertical-align:middle">`;t1="Produk baru: "+pr.n;t2=pr.b+" · kemasan: "+PKS[pr.id].nm.toLowerCase()+". "+MT[a[1]]+". "+INFO[a[1]]}
@@ -669,7 +677,7 @@ if(!okI(FIMG)){
  g.fillStyle=lg(CX-110,0,CX+110,0,["#6c7a93","#eef2fa","#6c7a93"]);g.strokeStyle="#cdd5e4";g.lineWidth=2;g.beginPath();g.moveTo(CX-112,16);g.lineTo(CX+112,16);g.lineTo(CX+20,104);g.lineTo(CX-20,104);g.closePath();g.fill();g.stroke();
  for(let i=0;i<14;i++){g.fillStyle=i%2?"#111":"#ffcc2a";g.fillRect(CX-112+i*16,12,16,8)}
  g.fillStyle="#4a5670";g.fillRect(CX-20,102,40,14);rr(CX-62,34,124,24,8);g.fillStyle="#1b2a52";g.fill();g.fillStyle="#fff";g.font="bold 13px sans-serif";g.textAlign="center";g.fillText(s.pr.n,CX,51);
- if(s.pr.kind==="b"){g.fillStyle=s.pr.col[0];g.beginPath();g.moveTo(CX-70,68);g.lineTo(CX+70,68);g.lineTo(CX+22,102);g.lineTo(CX-22,102);g.fill();const rt=s.mode==="menu"?"":"ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",")+" g/mL";if(rt){const t1="ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",");g.textAlign="left";g.lineJoin="round";g.font="bold 30px sans-serif";g.strokeStyle="#fff";g.lineWidth=4;g.strokeText(t1,10,106);g.fillStyle="#e5242b";g.fillText(t1,10,106);const w=g.measureText(t1).width;g.font="bold 13px sans-serif";g.lineWidth=3;g.strokeText(" g/mL",10+w,106);g.fillText(" g/mL",10+w,106)}}
+ if(s.pr.kind==="b"){g.fillStyle=s.pr.col[0];g.beginPath();g.moveTo(CX-70,68);g.lineTo(CX+70,68);g.lineTo(CX+22,102);g.lineTo(CX-22,102);g.fill();const rt=s.mode==="menu"?"":"ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",")+" g/mL";if(rt){const t1="ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",");g.textAlign="left";g.lineJoin="round";g.font="bold 30px sans-serif";g.strokeStyle="#fff";g.lineWidth=4;const rx=MQ.matches?26:10;g.strokeText(t1,rx,106);g.fillStyle="#e5242b";g.fillText(t1,rx,106);const w=g.measureText(t1).width;g.font="bold 13px sans-serif";g.lineWidth=3;g.strokeText(" g/mL",rx+w,106);g.fillText(" g/mL",rx+w,106)}}
  else for(let i=0;i<9;i++)bit(CX-40+(i%5)*20+(i>4?10:0),72+Math.floor(i/5)*17,6,s.pr.col[i%s.pr.col.length],s.pr.sh,i*2.3);
 }else{
 const kf=.795;g.drawImage(FIMG,CX-98*kf,3,196*kf,162*kf);
@@ -678,8 +686,8 @@ const kf=.795;g.drawImage(FIMG,CX-98*kf,3,196*kf,162*kf);
  if(s.pr.kind==="b"){g.fillStyle=s.pr.col[0];g.globalAlpha=.92;g.fillRect(CX-60,42,120,60);g.globalAlpha=1;g.fillStyle="rgba(255,255,255,.35)";g.fillRect(CX-60,42,120,2)}
  else hopPieces();
  g.fillStyle="rgba(255,255,255,.16)";g.fillRect(CX-46,34,14,70);g.restore();
- g.textAlign="left";g.fillStyle="#1b2a52";ft(s.pr.n,28,58,106,20);
- if(s.pr.kind==="b"&&s.mode!=="menu"){const t1="ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",");g.textAlign="left";g.lineJoin="round";g.font="bold 30px sans-serif";g.strokeStyle="#fff";g.lineWidth=4;g.strokeText(t1,10,106);g.fillStyle="#e5242b";g.fillText(t1,10,106);const w=g.measureText(t1).width;g.font="bold 13px sans-serif";g.lineWidth=3;g.strokeText(" g/mL",10+w,106);g.fillText(" g/mL",10+w,106)}
+ g.textAlign="left";g.fillStyle="#1b2a52";ft(s.pr.n,28,MQ.matches?76:58,106,MQ.matches?18:20);
+ if(s.pr.kind==="b"&&s.mode!=="menu"){const t1="ρ = "+(+s.rho).toFixed(s.pr.dp).replace(".",",");g.textAlign="left";g.lineJoin="round";g.font="bold 30px sans-serif";g.strokeStyle="#fff";g.lineWidth=4;const rx=MQ.matches?26:10;g.strokeText(t1,rx,106);g.fillStyle="#e5242b";g.fillText(t1,rx,106);const w=g.measureText(t1).width;g.font="bold 13px sans-serif";g.lineWidth=3;g.strokeText(" g/mL",rx+w,106);g.fillText(" g/mL",rx+w,106)}
 }
  /* corong cairan */
  if(s.lvS>=46||(s.mode==="rankup"&&s.level+1>=46)){const LX=CX+120,lcl=s.pr.lc&&s.m2==="tuntas"?s.pr.lc:null;
