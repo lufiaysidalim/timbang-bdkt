@@ -120,6 +120,7 @@ html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:1
 #alr{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background:var(--ac,rgba(255,150,0,.3));box-shadow:inset 0 0 calc(var(--u)*7) calc(var(--u)*1.2) var(--ab,rgba(255,150,0,.9))}
 #alr.on{animation:alrk var(--ad,1.8s) linear 1 both}
 @keyframes alrk{0%,100%{opacity:0}6%,26%,46%,66%,86%{opacity:1}16%,36%,56%,76%{opacity:.1}}
+@media (pointer:coarse) and (orientation:portrait){.g{--u:min(1vw,.7dvh);height:calc(var(--u)*140);grid-template-rows:7fr 4fr 44fr 3fr 3.92fr 13.3fr 13.3fr 7.7fr 5.6fr}}
 #ov .dm{display:flex;gap:8px;align-items:center;text-align:left;font-size:12.5px;line-height:1.3;background:rgba(196,43,82,.08);border:1px solid rgba(196,43,82,.35);border-radius:10px;padding:5px 8px;margin:7px 0}#ov .dm img{height:60px;width:auto;flex:none}
 </style>
 </head>
