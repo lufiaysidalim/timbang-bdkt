@@ -24,6 +24,7 @@ Buka `index.html` di peramban, atau gunakan tautan GitHub Pages repositori ini.
 - **Salah cairan**: Tuang Cairan pada produk selain bobot tuntas membuat isi terkontaminasi.
 - **Bobot tuntas**: untung = 10% x nilai bobot tuntas (hanya produk utama, bukan 10% x berat bersih). Kelebihan cairan pengisi dihargai Rp 20 per gram dan mengurangi untung. Kelebihan produk utama (jamur, buah, sarden) tetap mengurangi untung sesuai harga produknya, dan bila lebih dari bobot tuntas +10% untung habis dan kas berkurang. Sebelum level 66 belum ada aturan tumpah, jadi kelebihan bisa sangat banyak sampai merugikan kas.
 - **Mode Latihan**: tidak ada produk tumpah, hanya informasi bahwa menimbang berlebih mengurangi untung di permainan utama.
+- **Satuan**: berat bersih dan bobot tuntas memakai g (gram), isi bersih memakai mL, dan massa jenis cairan memakai g/mL. Mode jumlah isi (permen, wafer, coklat) hanya menampilkan angka tanpa satuan di belakangnya. Butiran permen pada mode jumlah dibuat kecil (setara ukuran butiran produk lain) dan kemasannya menyesuaikan jumlah butir.
 - **Kuis pelabelan**: waktu menjawab 6 sampai 12 detik, menyesuaikan panjang soal dan pilihan jawaban.
 - **Tinggi isi sebanding berat**: kemasan penuh berarti isi mencapai ujung atas bagian bening (tepi jendela, bibir kaleng, atau leher botol), yaitu berat label +10% (minimal +1 g). Mulai level 66, isi sampai titik itu tumpah.
 - Mulai level 61 kemasan bisa bocor (baru ketahuan setelah diisi), mulai level 66 isi berlebih bisa tumpah, dan mulai level 76 cairan tertentu merusak timbangan.
@@ -59,6 +60,29 @@ Setiap produk punya bentuk kemasan sendiri, tetap dengan bagian bening untuk mel
 | Kecap manis | Botol plastik bahu lebar |
 | Minyak sawit | Botol minyak bergagang |
 | Air mineral | Botol PET bergelombang |
+
+## Bobot butir, label, dan urutan produk
+
+Bobot tiap butir diundi acak dalam rentang berikut (dan massa jenis cairan diundi per ronde). Timbangan membaca 0,1 g.
+
+| Produk | Bobot butir / massa jenis | Label (di luar mode jumlah) |
+|---|---|---|
+| Permen buah | 0,95 – 1,05 g | berat bersih = 1X - 0,1 g |
+| Wafer vanila | 2,90 – 3,10 g | berat bersih = 3X - 0,2 g |
+| Coklat bar | 4,85 – 5,15 g | berat bersih = 5X - 0,3 g |
+| Tepung terigu | 0,15 – 0,35 g | bilangan bulat |
+| Keripik ubi | 1,55 – 2,45 g | bilangan bulat |
+| Kacang oven | 0,55 – 1,05 g | bilangan bulat |
+| Jamur kancing | 1,65 – 2,35 g | bobot tuntas = 2X - 0,7 g |
+| Potongan buah | 4,35 – 5,65 g | bobot tuntas = 4X - 1,4 g |
+| Ikan sarden | 5,05 – 6,95 g | bobot tuntas = 6X - 1,9 g |
+| Kecap manis | 1,1 – 1,3 g/mL | isi bersih 20 - 100 mL |
+| Minyak sawit | 0,75 – 0,95 g/mL | isi bersih 20 - 100 mL |
+| Air mineral | 0,875 – 1,125 g/mL | isi bersih 20 - 100 mL |
+
+X adalah bilangan bulat yang membuat label tetap berada di rentang permainan (berat bersih dan bobot tuntas 20 sampai 100 g; berat bersih tuntas sampai sekitar 120 g). Label desimal ditulis dengan koma, misalnya 19,9 g. Pada mode jumlah isi, penilaian berdasarkan hitungan butir, bukan berat.
+
+Urutan produk: Tepung terigu diperkenalkan pada level 11 dan Keripik ubi (lebih sulit) pada level 26.
 
 ## Pintasan keyboard
 
